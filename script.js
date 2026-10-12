@@ -232,6 +232,44 @@ let accompanimentSound="piano";
 let melodyVolume=1;
 let accompanimentVolume=1;
 
+let melodyLowMidi=57; // A3
+let melodyHighMidi=84; // C6
+
+function setupMelodyRange(){
+    const low=document.getElementById("fg-low");
+    const high=document.getElementById("fg-high");
+    if(!low || !high) return;
+    const pitchNames=["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+    for(let midi=40;midi<=96;midi++){
+        const label=pitchNames[midi%12]+(Math.floor(midi/12)-1);
+        for(const select of [low,high]){
+            const option=document.createElement("option");
+            option.value=String(midi);
+            option.textContent=label;
+            select.appendChild(option);
+        }
+    }
+    low.value=String(melodyLowMidi);
+    high.value=String(melodyHighMidi);
+    function changeRange(changed){
+        const a=Number(low.value),b=Number(high.value);
+        if(a>=b){
+            if(changed===low) high.value=String(Math.min(96,a+1));
+            else low.value=String(Math.max(40,b-1));
+        }
+        melodyLowMidi=Number(low.value);
+        melodyHighMidi=Number(high.value);
+        stopPlayback();
+        // Rebuild the current chart in the newly selected register.
+        if(sel.length && ro.length){
+            try{makeNotes();render();}
+            catch(error){console.error("Range regeneration error:",error);}
+        }
+    }
+    low.addEventListener("change",()=>changeRange(low));
+    high.addEventListener("change",()=>changeRange(high));
+}
+
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 
 function shuffle(a){
@@ -249,11 +287,11 @@ function candidates(n){
 
     let a=[];
 
-    for(let o=3;o<=6;o++){
+    for(let o=2;o<=7;o++){
 
         let m=12*(o+1)+PC[n];
 
-        if(m>=57 && m<=84){
+        if(m>=melodyLowMidi && m<=melodyHighMidi){
             a.push({
                 s:n+o,
                 m:m
@@ -1860,6 +1898,7 @@ async function initApp(){
 
     updateDisplayLabels();
     modernizeControls();
+    setupMelodyRange();
 
 /* ============================================================
    EVENT HANDLERS
