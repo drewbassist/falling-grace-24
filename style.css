@@ -181,4 +181,4 @@ body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",san
 .fg-bottom-transport button:focus-visible{outline:2px solid #555;outline-offset:2px}
 
 /* Playback follower: absolute overlay, no effect on score dimensions. */
-.fg-playback-cursor{position:absolute;top:15%;bottom:9%;width:2px;background:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.10);pointer-events:none;z-index:5;transition:left 70ms linear;}
+.fg-playback-cursor{position:absolute;top:0;height:0;width:1px;background:#2563eb;box-shadow:none;pointer-events:none;z-index:5;transition:left 70ms linear;}

@@ -1468,44 +1468,56 @@ function clearScoreFollower(){
 function startScoreFollower(synth, startTime, beat){
     clearScoreFollower();
     const positions=[];
-    for(let i=0;i<B.length;i++){
-        const system=document.querySelectorAll("#score .score-system")[Math.floor(i/4)];
-        if(!system) continue;
+    const systems=[...document.querySelectorAll("#score .score-system")];
+    for(let group=0;group<systems.length;group++){
+        const system=systems[group];
         const svg=system.querySelector("svg");
         if(!svg) continue;
-        // ABCJS supplies one note group per engraved attack. Open bars have rests.
-        const barGroups=[...system.querySelectorAll(".abcjs-m"+(i%4))];
-        let candidates=[];
-        if(barGroups.length){
-            barGroups.forEach(g=>candidates.push(...g.querySelectorAll(".abcjs-note")));
-        }
-        if(!candidates.length){
-            const all=[...system.querySelectorAll(".abcjs-note")];
-            const counts=[0,1,2,3].map(j=>[5,20].includes(Math.floor(i/4)*4+j)?0:notes[Math.floor(i/4)*4+j]?.length||0);
-            const offset=counts.slice(0,i%4).reduce((a,b)=>a+b,0);
-            candidates=all.slice(offset,offset+counts[i%4]);
-        }
-        if(i===5 || i===20) continue;
-        let pos=0;
-        eventDurations(i).forEach((units,j)=>{
-            const node=candidates[j];
-            if(node){
-                try{
-                    const bb=node.getBBox();
-                    const pt=svg.createSVGPoint();
-                    pt.x=bb.x+bb.width/2; pt.y=bb.y;
-                    const matrix=node.getCTM();
-                    const svgPt=matrix?pt.matrixTransform(matrix):pt;
-                    const svgRect=svg.getBoundingClientRect();
-                    const systemRect=system.getBoundingClientRect();
-                    const viewBox=svg.viewBox.baseVal;
-                    const scaleX=svgRect.width/(viewBox.width||svgRect.width);
-                    const x=svgRect.left-systemRect.left+(svgPt.x-viewBox.x)*scaleX;
-                    positions.push({time:(i*4+pos/2)*beat,system,x});
-                }catch(e){}
-            }
-            pos+=units;
+        const systemRect=system.getBoundingClientRect();
+        const svgRect=svg.getBoundingClientRect();
+        const viewBox=svg.viewBox.baseVal;
+        const scaleX=svgRect.width/(viewBox.width||svgRect.width);
+        const svgToX=x=>svgRect.left-systemRect.left+(x-viewBox.x)*scaleX;
+        const elementX=node=>{
+            try{
+                const bb=node.getBBox();
+                const pt=svg.createSVGPoint();
+                pt.x=bb.x+bb.width/2;pt.y=bb.y;
+                const matrix=node.getCTM();
+                return svgToX(matrix?pt.matrixTransform(matrix).x:pt.x);
+            }catch(e){return null;}
+        };
+        // Read existing engraving coordinates; do not change or re-render notation.
+        const firstNotes=[0,1,2,3].map(m=>{
+            const notesInBar=[...system.querySelectorAll(".abcjs-m"+m+" .abcjs-note")];
+            return notesInBar.length?elementX(notesInBar[0]):null;
         });
+        const barlines=[...system.querySelectorAll(".abcjs-bar")]
+            .map(elementX).filter(x=>x!==null).sort((a,b)=>a-b);
+        const staff=system.querySelector(".abcjs-staff");
+        let top=null,height=null;
+        if(staff){
+            const r=staff.getBoundingClientRect();
+            if(r.height>0){top=r.top-systemRect.top;height=r.height;}
+        }
+        // Quarter-note grid: four equal beat positions per bar, irrespective
+        // of note attacks, rests, ties, or the melody's rhythmic subdivision.
+        for(let m=0;m<4;m++){
+            const barIndex=group*4+m;
+            const leftBoundary=m===0 ? (barlines[0]??null) : (barlines[m-1]??null);
+            const rightBoundary=barlines[m]??null;
+            const left=firstNotes[m]??(leftBoundary!==null?leftBoundary+8:null);
+            const nextFirst=m<3?firstNotes[m+1]:null;
+            const right=rightBoundary??(nextFirst!==null?nextFirst-8:null);
+            if(left===null || right===null || right<=left) continue;
+            // Keep each beat marker inside its engraved measure.
+            const end=nextFirst!==null?Math.min(right,nextFirst-8):right;
+            const width=Math.max(0,end-left);
+            for(let q=0;q<4;q++){
+                positions.push({time:(barIndex*4+q)*beat,system,
+                    x:left+width*q/4,top,height});
+            }
+        }
     }
     if(!positions.length) return;
     const overlays=new Map();
@@ -1525,6 +1537,10 @@ function startScoreFollower(synth, startTime, beat){
                 overlays.set(active.system,line);
             }
             line.style.left=active.x+"px";
+            if(active.top!==null && active.height!==null){
+                line.style.top=active.top+"px";
+                line.style.height=active.height+"px";
+            }
             line.style.display="block";
         }
         window.fgFollowerFrame=requestAnimationFrame(update);
@@ -2030,7 +2046,7 @@ function arrangeCompactControls(styleButtons){
     const scoreSection=document.querySelector("#score-section");
     if(scoreSection){
         originalRow.classList.add("fg-bottom-transport");
-        scoreSection.insertAdjacentElement("afterend",originalRow);
+        third.insertAdjacentElement("afterend",originalRow);
         const hint=document.createElement("span");
         hint.className="fg-space-hint";
         hint.textContent="Space = Play / Stop";
