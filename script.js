@@ -1462,7 +1462,7 @@ function soundFontBufferForMidi(instrument,midi){
 function clearScoreFollower(){
     if(window.fgFollowerFrame) cancelAnimationFrame(window.fgFollowerFrame);
     window.fgFollowerFrame=0;
-    document.querySelectorAll(".fg-playback-cursor").forEach(el=>el.remove());
+    document.querySelectorAll(".fg-playback-cursor, .fg-measure-marker").forEach(el=>el.remove());
 }
 
 function startScoreFollower(synth, startTime, beat){
@@ -1515,18 +1515,20 @@ function startScoreFollower(synth, startTime, beat){
             const width=Math.max(0,end-left);
             for(let q=0;q<4;q++){
                 positions.push({time:(barIndex*4+q)*beat,system,
-                    x:left+width*q/4,top,height});
+                    x:left+width*q/4,barX:left,barIndex,top,height});
             }
         }
     }
     if(!positions.length) return;
     const overlays=new Map();
+    const measureMarkers=new Map();
     const update=()=>{
         if(synth.stopped || audioSynth!==synth){clearScoreFollower();return;}
         const elapsed=Math.max(0,synth.context.currentTime-startTime);
         let active=null;
         for(const p of positions){if(p.time<=elapsed+0.015) active=p;else break;}
         overlays.forEach((line,system)=>{line.style.display=active&&system===active.system?"block":"none";});
+        measureMarkers.forEach((marker,system)=>{marker.style.display=active&&system===active.system?"block":"none";});
         if(active){
             let line=overlays.get(active.system);
             if(!line){
@@ -1542,6 +1544,20 @@ function startScoreFollower(synth, startTime, beat){
                 line.style.height=active.height+"px";
             }
             line.style.display="block";
+            let marker=measureMarkers.get(active.system);
+            if(!marker){
+                marker=document.createElement("div");
+                marker.className="fg-measure-marker";
+                marker.setAttribute("aria-hidden","true");
+                active.system.appendChild(marker);
+                measureMarkers.set(active.system,marker);
+            }
+            // A stationary indicator at beat one, held until the next measure.
+            marker.style.left=active.barX+"px";
+            if(active.top!==null && active.height!==null){
+                marker.style.top=(active.top+active.height+3)+"px";
+            }
+            marker.style.display="block";
         }
         window.fgFollowerFrame=requestAnimationFrame(update);
     };
