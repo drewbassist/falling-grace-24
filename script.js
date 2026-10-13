@@ -1160,7 +1160,14 @@ function renderScore(){
                 el.style.display="none";
             });
 
-            const barlines=[...system.querySelectorAll(".abcjs-bar")].map(el=>{
+            // Empty improvisation measures contain rests, not noteheads.
+        // Include those rests when finding the measure's engraved start.
+        const firstSymbols=[0,1,2,3].map(m=>{
+            const nodes=[...system.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note, .abcjs-m${m}.abcjs-rest, .abcjs-m${m} .abcjs-rest`)];
+            const xs=nodes.map(elementX).filter(x=>x!==null);
+            return xs.length?Math.min(...xs):null;
+        });
+        const barlines=[...system.querySelectorAll(".abcjs-bar")].map(el=>{
                 try{
                     const box=el.getBBox();
                     return {x:box.x,y:box.y,width:box.width,height:box.height};
@@ -1495,6 +1502,13 @@ function startScoreFollower(synth, startTime, beat){
             const xs=candidates.map(elementX).filter(x=>x!==null);
             return xs.length?Math.min(...xs):null;
         });
+        // Empty improvisation measures contain rests, not noteheads.
+        // Include those rests when finding the measure's engraved start.
+        const firstSymbols=[0,1,2,3].map(m=>{
+            const nodes=[...system.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note, .abcjs-m${m}.abcjs-rest, .abcjs-m${m} .abcjs-rest`)];
+            const xs=nodes.map(elementX).filter(x=>x!==null);
+            return xs.length?Math.min(...xs):null;
+        });
         const barlines=[...system.querySelectorAll(".abcjs-bar")]
             .map(elementX).filter(x=>x!==null).sort((a,b)=>a-b)
             .filter((x,i,arr)=>i===0||x-arr[i-1]>2);
@@ -1521,13 +1535,24 @@ function startScoreFollower(synth, startTime, beat){
             // Prefer the actual note position, with engraved barline fallback
             // for system-opening measures and measures without noteheads.
             const noteStart=firstNotes[m];
+            const symbolStart=firstSymbols[m];
             // Mark the measure boundary, not the first notehead. ABCJS
             // leaves space after each barline before engraving the note.
             // For a system-opening measure there is no preceding barline:
             // place the marker just before its first note instead.
-            const precedingBarline=m===0||noteStart===null?null:
-                [...barlines].reverse().find(x=>x<noteStart-2);
-            const left=precedingBarline ?? (noteStart!==null?noteStart-12:(barlines[m]??null));
+            const precedingBarline=m===0||symbolStart===null?null:
+                [...barlines].reverse().find(x=>x<symbolStart-2);
+            // Improvisation bars (6 and 21) have no noteheads. Locate their
+            // start from the engraved barlines instead of skipping the bar.
+            // For a system-opening empty bar (21), estimate the opening
+            // boundary from the adjacent engraved bar width.
+            const emptyBarStart=m===0
+                ? (barlines.length>=2 ? barlines[0]-(barlines[1]-barlines[0])
+                   : (barlines[0]!==undefined ? barlines[0]-80 : null))
+                : (barlines[m-1]??null);
+            // Do not drop a timed measure simply because it contains no notes.
+            // Use the engraved rest as the anchor when available.
+            const left=precedingBarline ?? (symbolStart!==null?symbolStart-12:emptyBarStart);
             if(left===null) continue;
             const nextFirst=m<3?firstNotes[m+1]:null;
             const rightBoundary=barlines.find(x=>x>left+2)??null;
