@@ -1520,10 +1520,17 @@ function startScoreFollower(synth, startTime, beat){
             const barIndex=group*4+m;
             // Prefer the actual note position, with engraved barline fallback
             // for system-opening measures and measures without noteheads.
-            const left=firstNotes[m] ?? (barlines[m] ?? null);
+            const noteStart=firstNotes[m];
+            // Mark the measure boundary, not the first notehead. ABCJS
+            // leaves space after each barline before engraving the note.
+            // For a system-opening measure there is no preceding barline:
+            // place the marker just before its first note instead.
+            const precedingBarline=m===0||noteStart===null?null:
+                [...barlines].reverse().find(x=>x<noteStart-2);
+            const left=precedingBarline ?? (noteStart!==null?noteStart-12:(barlines[m]??null));
             if(left===null) continue;
             const nextFirst=m<3?firstNotes[m+1]:null;
-            const rightBoundary=barlines.find(x=>x>left+1)??null;
+            const rightBoundary=barlines.find(x=>x>left+2)??null;
             const right=rightBoundary??(nextFirst!==null?nextFirst-8:null);
             // A measure marker needs only the starting x coordinate;
             // never discard it because its ending barline is ambiguous.
