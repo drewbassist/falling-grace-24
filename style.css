@@ -150,3 +150,32 @@ td{padding:10px 12px;border-bottom:1px solid #ddd;white-space:nowrap}
 #transport #fg-favorites{gap:9px;flex:1 1 440px}
 #transport #fg-favorites-message{font-size:12px}
 @media(max-width:850px){#transport .fg-compact-row{gap:13px 18px}#transport #fg-favorites{flex-basis:100%}}
+
+
+/* UI typography and bottom transport only. Score styling is deliberately excluded. */
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#transport, #transport button, #transport select, #transport label,
+#transport #fg-favorites, #transport #fg-range, #transport #tempo-control,
+.fg-bottom-transport, .fg-bottom-transport button{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+}
+#transport label, #transport #fg-range strong, #transport .fg-sound-control,
+#transport .fg-volume-control{font-weight:500 !important}
+#transport .fg-compact-actions .fg-modern-button,
+#transport .fg-style-buttons button,
+#transport #fg-favorites button{font-weight:500 !important}
+#transport .fg-compact-actions .fg-primary-button,
+#transport .fg-style-buttons button[aria-pressed="true"]{font-weight:600 !important}
+.fg-bottom-transport{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:12px 0 18px;margin:0 0 18px;flex-wrap:wrap;
+}
+.fg-bottom-transport button{
+  height:38px;min-height:38px;border-radius:6px !important;
+  border:1px solid #d1d1d1 !important;padding:0 16px !important;
+  font-size:13px !important;font-weight:600 !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.035);
+}
+.fg-bottom-transport .primary-control{background:#171717 !important;color:white !important;border-color:#171717 !important}
+.fg-bottom-transport #transport-status,.fg-space-hint{font-size:12px;color:#777;font-weight:400}
+.fg-bottom-transport button:focus-visible{outline:2px solid #555;outline-offset:2px}

@@ -1946,6 +1946,17 @@ function arrangeCompactControls(styleButtons){
     third.appendChild(favorites);
     originalRow.insertAdjacentElement("afterend",second);
     second.insertAdjacentElement("afterend",third);
+
+    // Place the existing, already-wired playback controls below the score.
+    const scoreSection=document.querySelector("#score-section");
+    if(scoreSection){
+        originalRow.classList.add("fg-bottom-transport");
+        scoreSection.insertAdjacentElement("afterend",originalRow);
+        const hint=document.createElement("span");
+        hint.className="fg-space-hint";
+        hint.textContent="Space = Play / Stop";
+        originalRow.appendChild(hint);
+    }
 }
 
 async function initApp(){
@@ -1979,6 +1990,16 @@ if(stopButton){
         stopPlayback
     );
 }
+
+// Keyboard transport: Space toggles playback, except while editing a control.
+document.addEventListener("keydown",(event)=>{
+    if(event.code!=="Space" || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
+    const target=event.target;
+    if(target instanceof Element && (target.closest('input, select, textarea, button, [contenteditable="true"], [role="button"]') || target.isContentEditable)) return;
+    event.preventDefault();
+    if(audioState==="playing" || audioState==="paused" || audioState==="loading") stopPlayback();
+    else void playPause();
+});
 
 
 const tempoControl=
