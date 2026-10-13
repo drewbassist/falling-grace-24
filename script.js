@@ -1160,13 +1160,6 @@ function renderScore(){
                 el.style.display="none";
             });
 
-            // Empty improvisation measures contain rests, not noteheads.
-        // Include those rests when finding the measure's engraved start.
-        const firstSymbols=[0,1,2,3].map(m=>{
-            const nodes=[...system.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note, .abcjs-m${m}.abcjs-rest, .abcjs-m${m} .abcjs-rest`)];
-            const xs=nodes.map(elementX).filter(x=>x!==null);
-            return xs.length?Math.min(...xs):null;
-        });
         const barlines=[...system.querySelectorAll(".abcjs-bar")].map(el=>{
                 try{
                     const box=el.getBBox();
