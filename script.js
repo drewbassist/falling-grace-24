@@ -1947,16 +1947,14 @@ function arrangeCompactControls(styleButtons){
     originalRow.insertAdjacentElement("afterend",second);
     second.insertAdjacentElement("afterend",third);
 
-    // Place the existing, already-wired playback controls below the score.
-    const scoreSection=document.querySelector("#score-section");
-    if(scoreSection){
-        originalRow.classList.add("fg-bottom-transport");
-        scoreSection.insertAdjacentElement("afterend",originalRow);
-        const hint=document.createElement("span");
-        hint.className="fg-space-hint";
-        hint.textContent="Space = Play / Stop";
-        originalRow.appendChild(hint);
-    }
+    // Place the existing, already-wired playback controls after all settings,
+    // immediately before the score; retain their IDs and event handlers.
+    originalRow.classList.add("fg-bottom-transport");
+    third.insertAdjacentElement("afterend",originalRow);
+    const hint=document.createElement("span");
+    hint.className="fg-space-hint";
+    hint.textContent="Space = Play / Stop";
+    originalRow.appendChild(hint);
 }
 
 async function initApp(){
