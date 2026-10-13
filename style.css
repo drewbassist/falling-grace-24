@@ -108,3 +108,45 @@ td{padding:10px 12px;border-bottom:1px solid #ddd;white-space:nowrap}
 #transport #fg-favorites button,#transport #fg-favorites select{padding:6px 8px}
 #transport .fg-volume-control input[type="range"]{width:85px !important}
 @media(max-width:850px){#transport .fg-compact-row{gap:12px}#transport #fg-favorites{flex-basis:100%}}
+
+/* Control-panel visual polish only. No score, notation or playback selectors. */
+#transport.fg-compact-panel{padding:15px 0 17px;margin-bottom:12px}
+#transport .fg-compact-actions{gap:10px 12px}
+#transport .fg-compact-row{padding-top:15px;gap:16px 26px}
+#transport .fg-compact-audio-favorites{align-items:center;gap:18px 26px}
+#transport .fg-sound-stack{gap:8px !important}
+#transport .fg-sound-control,#transport .fg-volume-control{gap:9px !important}
+#transport .fg-compact-actions .fg-modern-button,
+#transport .fg-style-buttons button,
+#transport #fg-favorites button,
+#transport #fg-favorites select,
+#transport #fg-range select,
+#transport .fg-sound-control select{
+  border-radius:6px !important;
+  border:1px solid #d1d1d1 !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.035) !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:13px !important;
+  line-height:1.2 !important;
+}
+#transport .fg-compact-actions .fg-modern-button,
+#transport .fg-style-buttons button,
+#transport #fg-favorites button,
+#transport #fg-favorites select,
+#transport #fg-range select,
+#transport .fg-sound-control select{height:38px !important;min-height:38px !important;box-sizing:border-box !important}
+#transport .fg-compact-actions .fg-modern-button{padding:0 15px !important}
+#transport .fg-style-buttons button{padding:0 13px !important}
+#transport #fg-favorites button,#transport #fg-favorites select{padding:0 11px !important}
+#transport #fg-range select{padding:0 8px !important}
+#transport .fg-compact-actions .fg-primary-button,
+#transport .fg-compact-actions .fg-play-button,
+#transport .fg-style-buttons button[aria-pressed="true"]{
+  background:#171717 !important;color:#fff !important;border-color:#171717 !important;
+}
+#transport .fg-style-buttons button[aria-pressed="false"]{background:#fff !important;color:#171717 !important}
+#transport button:not(:disabled):hover,#transport select:not(:disabled):hover{border-color:#999 !important}
+#transport button:focus-visible,#transport select:focus-visible,#transport input:focus-visible{outline:2px solid #555;outline-offset:2px}
+#transport #fg-favorites{gap:9px;flex:1 1 440px}
+#transport #fg-favorites-message{font-size:12px}
+@media(max-width:850px){#transport .fg-compact-row{gap:13px 18px}#transport #fg-favorites{flex-basis:100%}}
