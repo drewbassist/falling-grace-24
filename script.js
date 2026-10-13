@@ -1488,12 +1488,16 @@ function startScoreFollower(synth, startTime, beat){
             }catch(e){return null;}
         };
         // Read existing engraving coordinates; do not change or re-render notation.
+        // abcjs may put measure and note classes on the SAME SVG element.
+        // The old descendant-only selector returned no notes, hiding the marker.
         const firstNotes=[0,1,2,3].map(m=>{
-            const notesInBar=[...system.querySelectorAll(".abcjs-m"+m+" .abcjs-note")];
-            return notesInBar.length?elementX(notesInBar[0]):null;
+            const candidates=[...system.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note`)];
+            const xs=candidates.map(elementX).filter(x=>x!==null);
+            return xs.length?Math.min(...xs):null;
         });
         const barlines=[...system.querySelectorAll(".abcjs-bar")]
-            .map(elementX).filter(x=>x!==null).sort((a,b)=>a-b);
+            .map(elementX).filter(x=>x!==null).sort((a,b)=>a-b)
+            .filter((x,i,arr)=>i===0||x-arr[i-1]>2);
         const staff=system.querySelector(".abcjs-staff");
         let top=null,height=null;
         if(staff){
@@ -1504,17 +1508,16 @@ function startScoreFollower(synth, startTime, beat){
         // of note attacks, rests, ties, or the melody's rhythmic subdivision.
         for(let m=0;m<4;m++){
             const barIndex=group*4+m;
-            // System-opening barlines may include an extra initial barline.
-            // Resolve each measure by its engraved first note instead of
-            // assuming barline indices line up with measure indices.
-            const left=firstNotes[m];
+            // Prefer the actual note position, with engraved barline fallback
+            // for system-opening measures and measures without noteheads.
+            const left=firstNotes[m] ?? (barlines[m] ?? null);
+            if(left===null) continue;
             const nextFirst=m<3?firstNotes[m+1]:null;
-            const rightBoundary=left===null?null:(barlines.find(x=>x>left+1)??null);
+            const rightBoundary=barlines.find(x=>x>left+1)??null;
             const right=rightBoundary??(nextFirst!==null?nextFirst-8:null);
-            if(left===null || right===null || right<=left) continue;
-            // Keep each beat marker inside its engraved measure.
-            const end=nextFirst!==null?Math.min(right,nextFirst-8):right;
-            const width=Math.max(0,end-left);
+            // A measure marker needs only the starting x coordinate;
+            // never discard it because its ending barline is ambiguous.
+            const width=right!==null&&right>left?right-left:0;
             for(let q=0;q<4;q++){
                 positions.push({time:(barIndex*4+q)*beat,system,
                     x:left+width*q/4,barX:left,barIndex,top,height});
