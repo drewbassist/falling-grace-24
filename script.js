@@ -1920,6 +1920,34 @@ function modernizeControls(){
     }
 }
 
+function arrangeCompactControls(styleButtons){
+    const transport=document.querySelector("#transport");
+    const originalRow=document.querySelector("#transport-controls");
+    const range=document.querySelector("#fg-range");
+    const favorites=document.querySelector("#fg-favorites");
+    const tempo=document.querySelector("#tempo-control");
+    if(!transport || !originalRow || !range || !favorites || !tempo) return;
+
+    transport.classList.add("fg-compact-panel");
+    originalRow.classList.add("fg-compact-actions");
+    const second=document.createElement("div");
+    second.className="fg-compact-row fg-compact-settings";
+    const third=document.createElement("div");
+    third.className="fg-compact-row fg-compact-audio-favorites";
+
+    // Move the already-wired nodes without touching their state or handlers.
+    second.appendChild(tempo);
+    second.appendChild(range);
+    second.appendChild(styleButtons);
+    [".fg-melody-stack", ".fg-accompaniment-stack"].forEach(selector=>{
+        const control=document.querySelector(selector);
+        if(control) third.appendChild(control);
+    });
+    third.appendChild(favorites);
+    originalRow.insertAdjacentElement("afterend",second);
+    second.insertAdjacentElement("afterend",third);
+}
+
 async function initApp(){
 
     updateDisplayLabels();
@@ -2033,6 +2061,10 @@ for(const [value,label] of [["angular","Angular"],["smooth","Smooth Contour"]]){
 }
 const scoreSection=document.querySelector("#score-section");
 if(scoreSection) scoreSection.parentNode.insertBefore(styleButtons,scoreSection);
+
+// Layout only: group the existing controls into three compact rows.
+// The original elements (and their event listeners) are moved, not recreated.
+arrangeCompactControls(styleButtons);
 
 const generateButton=
     document.querySelector("#generate");

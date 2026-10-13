@@ -88,3 +88,23 @@ td{padding:10px 12px;border-bottom:1px solid #ddd;white-space:nowrap}
 #fg-range{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 12px;font:13px Arial,Helvetica,sans-serif}
 #fg-range strong{font-weight:700;margin-right:3px}
 #fg-range select{width:70px;height:30px;padding:3px 5px;border:1px solid #bbb;border-radius:4px;background:#fff;font:13px Arial,Helvetica,sans-serif}
+
+
+/* Compact three-row control panel; score and engraving rules are untouched. */
+.header .actions{display:none}
+#transport.fg-compact-panel{margin:0 0 10px;padding:10px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd}
+#transport .fg-compact-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;min-height:0}
+#transport .fg-compact-actions .fg-modern-button{min-height:40px !important;padding:0 13px !important}
+#transport .fg-compact-row{display:flex;align-items:center;flex-wrap:wrap;gap:18px;padding:10px 0 0}
+#transport .fg-compact-settings{gap:24px}
+#transport #tempo-control{margin:0;display:flex;align-items:center;gap:7px;white-space:nowrap}
+#transport #tempo{width:90px;height:auto;padding:0;border:0;background:transparent}
+#transport #fg-range{margin:0;gap:6px}
+#transport .fg-style-buttons{margin:0;gap:7px}
+#transport .fg-style-buttons button{padding:8px 11px}
+#transport .fg-sound-stack{gap:4px !important}
+#transport .fg-sound-control select{min-height:32px !important}
+#transport #fg-favorites{margin:0;padding:0;border:0;gap:7px;flex:1 1 430px}
+#transport #fg-favorites button,#transport #fg-favorites select{padding:6px 8px}
+#transport .fg-volume-control input[type="range"]{width:85px !important}
+@media(max-width:850px){#transport .fg-compact-row{gap:12px}#transport #fg-favorites{flex-basis:100%}}
