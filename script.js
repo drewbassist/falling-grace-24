@@ -56,7 +56,7 @@ const B=[
 "F,G,A,C,D"
 ]],
 
-["Bb7",[
+["Fm7  Bb7",[
 "Bb,C,D,F,G",
 "F,G,Ab,C,D",
 "Bb,Db,D,F,Ab",
@@ -96,13 +96,13 @@ const B=[
 "A,B,C,E,F#"
 ]],
 
-["B7",[
-"B,C#,D#,F#,G#",
-"F#,G#,A,C#,D#",
-"B,D,D#,F#,A",
+["Am7  D7",[
+"D,E,F#,A,B",
+"A,B,C,E,F#",
 "D,F,F#,A,C",
-"E,G,G#,B,D",
-"G#,B,C,D#,F#"
+"F,Ab,A,C,Eb",
+"Ab,B,C,Eb,Gb",
+"B,D,D#,F#,A"
 ]],
 
 ["Em7",[
@@ -141,7 +141,7 @@ const B=[
 "D,F,F#,A,C"
 ]],
 
-["BbM7",[
+["Bb/D",[
 "Bb,C,D,F,G",
 "C,D,E,G,A",
 "F,G,A,C,D",
@@ -155,7 +155,7 @@ const B=[
 "C,D,Eb,G,A"
 ]],
 
-["Em7",[
+["Em7b5",[
 "E,F#,G,B,C#",
 "G,A,B,D,E",
 "A,B,C#,E,F#",
@@ -174,7 +174,7 @@ const B=[
 // MEASURE 21 — PLAYER IMPROVISES
 ["Dm7  Db7",[]],
 
-["F7",[
+["Cm7  F7",[
 "F,G,A,C,D",
 "C,D,Eb,F,G",
 "F,Ab,A,C,Eb",
@@ -832,6 +832,20 @@ function abcMeasure(index){
         }
     }
 
+    // Two-chord bars: retain generated pitch/rhythm, show the second chord on beat 3.
+    const splitChords={4:"Bb7",10:"D7",21:"F7"};
+    if(Object.prototype.hasOwnProperty.call(splitChords,index)){
+        for(let k=0;k<engraved.length;k++){
+            const e=engraved[k];
+            if(e.start<4 && e.start+e.duration>4){
+                const left=4-e.start, right=e.duration-left;
+                const bare=e.abc.replace(/\d+$/,"");
+                engraved.splice(k,1,{...e,abc:bare+left,duration:left,originalEnd:-1,splitTie:true},
+                    {...e,abc:bare.replace(/^[\^_=]/,"")+right,duration:right,start:4,splitContinuation:true});
+                break;
+            }
+        }
+    }
     let out="";
     engraved.forEach((event,i)=>{
         if(i>0){
@@ -843,7 +857,9 @@ function abcMeasure(index){
                 Math.floor(prev.start/2)===Math.floor(event.start/2);
             out += beamTogether ? "" : " ";
         }
+        if(Object.prototype.hasOwnProperty.call(splitChords,index) && event.start===4) out += `"${splitChords[index]}"`;
         out += event.abc;
+        if(event.splitTie) out += "-";
         if(tiePositions.includes(event.originalEnd) ||
            (event.originalEnd===events.length-1 && boundaryTied(index))) out += "-";
     });
@@ -886,7 +902,7 @@ function buildABC(){
 
         if(i===5 || i===20){
 
-            bar=`"${chord}" z8 |`;
+            bar=i===5 ? `"Eb/G" z4 "D7/F#" z4 |` : `"${chord}" z8 |`;
 
         }else{
 
@@ -1058,7 +1074,7 @@ function renderScore(){
                 if(i===20){
                     bar=`"Dm7" z4 "Db7" z4 |`;
                 }else if(i===5){
-                    bar=`"${chord}" z8 |`;
+                    bar=`"Eb/G" z4 "D7/F#" z4 |`;
                 }else{
                     bar=`"${chord}" ${abcMeasure(i)} |`;
                 }
@@ -1351,7 +1367,7 @@ const ACCOMP_VOICINGS=[
     [53,56,62,70], [55,58,63,67], [53,58,62,67], [52,55,60,64],
     [52,57,60,65], [52,54,57,60], [51,57,59,66], [52,55,59,62],
     [54,57,60,62], [54,59,62,66], [51,55,58,60], [52,55,58,61],
-    [53,57,58,62], [55,58,62,63], [55,59,62,64], [55,57,61,64],
+    [50,53,58,62], [55,58,62,63], [52,55,58,62], [55,57,61,64],
     [53,57,60,62], [53,56,58,62], [53,57,58,62], [55,58,62,63]
 ];
 
@@ -1524,7 +1540,17 @@ async function playWithSoundFonts(){
     const melodyEvents=[];
     for(let i=0;i<B.length;i++){
         const barStart=startTime+i*barDur;
-        if(i===20){
+        if([4,5,10,21].includes(i)){
+            const halfBar=barDur/2;
+            const pairs={
+                4:[[53,56,60,63],[53,56,62,70]], // Fm7 / Bb7
+                5:[[55,58,63,67],[54,60,62,69]], // Eb/G / D7/F#
+                10:[[52,55,57,60],[54,57,60,62]], // Am7 / D7
+                21:[[51,55,58,60],[53,56,58,62]] // Cm7 / F7
+            };
+            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.105,accompanimentMaster));
+            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.105,accompanimentMaster));
+        }else if(i===20){
             const halfBar=barDur/2;
             [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.105,accompanimentMaster));
             [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.105,accompanimentMaster));
