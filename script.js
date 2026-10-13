@@ -893,7 +893,7 @@ function buildABC(){
 
     for(let i=0;i<B.length;i++){
 
-        const chord=B[i][0]
+        const chord=B[i][0].split(/\s{2,}/)[0]
             .replace(/♭/g,"b")
             .replace(/♯/g,"#")
             .replace(/M7/g,"△7");
@@ -1063,7 +1063,7 @@ function renderScore(){
 
             for(let i=first;i<last;i++){
 
-                const chord=B[i][0]
+                const chord=B[i][0].split(/\s{2,}/)[0]
                     .replace(/♭/g,"b")
                     .replace(/♯/g,"#")
             .replace(/M7/g,"△7");
