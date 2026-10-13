@@ -1498,11 +1498,21 @@ function startScoreFollower(synth, startTime, beat){
         const barlines=[...system.querySelectorAll(".abcjs-bar")]
             .map(elementX).filter(x=>x!==null).sort((a,b)=>a-b)
             .filter((x,i,arr)=>i===0||x-arr[i-1]>2);
-        const staff=system.querySelector(".abcjs-staff");
-        let top=null,height=null;
-        if(staff){
-            const r=staff.getBoundingClientRect();
-            if(r.height>0){top=r.top-systemRect.top;height=r.height;}
+        // Anchor the triangle to the bottom STAFF LINE, not to a note or
+        // the overall staff group's bounding box (which can include ledger lines).
+        let staffBottom=null;
+        const staffLines=[...svg.querySelectorAll(".abcjs-staff")];
+        const scaleY=svgRect.height/(viewBox.height||svgRect.height);
+        for(const line of staffLines){
+            try{
+                const bb=line.getBBox();
+                const pt=svg.createSVGPoint();
+                pt.x=bb.x;pt.y=bb.y+bb.height;
+                const matrix=line.getCTM();
+                const svgY=matrix?pt.matrixTransform(matrix).y:pt.y;
+                const y=svgRect.top-systemRect.top+(svgY-viewBox.y)*scaleY;
+                if(staffBottom===null||y>staffBottom) staffBottom=y;
+            }catch(e){}
         }
         // Quarter-note grid: four equal beat positions per bar, irrespective
         // of note attacks, rests, ties, or the melody's rhythmic subdivision.
@@ -1520,7 +1530,7 @@ function startScoreFollower(synth, startTime, beat){
             const width=right!==null&&right>left?right-left:0;
             for(let q=0;q<4;q++){
                 positions.push({time:(barIndex*4+q)*beat,system,
-                    x:left+width*q/4,barX:left,barIndex,top,height});
+                    x:left+width*q/4,barX:left,barIndex,staffBottom});
             }
         }
     }
@@ -1543,8 +1553,10 @@ function startScoreFollower(synth, startTime, beat){
             }
             // A stationary indicator at beat one, held until the next measure.
             marker.style.left=active.barX+"px";
-            if(active.top!==null && active.height!==null){
-                marker.style.top=(active.top+active.height+3)+"px";
+            if(active.staffBottom!==null){
+                // Triangle tip sits at the bottom staff line, consistently
+                // above low notes and their ledger lines.
+                marker.style.top=(active.staffBottom+1)+"px";
             }
             marker.style.display="block";
         }
