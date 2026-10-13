@@ -1504,10 +1504,12 @@ function startScoreFollower(synth, startTime, beat){
         // of note attacks, rests, ties, or the melody's rhythmic subdivision.
         for(let m=0;m<4;m++){
             const barIndex=group*4+m;
-            const leftBoundary=m===0 ? (barlines[0]??null) : (barlines[m-1]??null);
-            const rightBoundary=barlines[m]??null;
-            const left=firstNotes[m]??(leftBoundary!==null?leftBoundary+8:null);
+            // System-opening barlines may include an extra initial barline.
+            // Resolve each measure by its engraved first note instead of
+            // assuming barline indices line up with measure indices.
+            const left=firstNotes[m];
             const nextFirst=m<3?firstNotes[m+1]:null;
+            const rightBoundary=left===null?null:(barlines.find(x=>x>left+1)??null);
             const right=rightBoundary??(nextFirst!==null?nextFirst-8:null);
             if(left===null || right===null || right<=left) continue;
             // Keep each beat marker inside its engraved measure.
@@ -1520,30 +1522,14 @@ function startScoreFollower(synth, startTime, beat){
         }
     }
     if(!positions.length) return;
-    const overlays=new Map();
     const measureMarkers=new Map();
     const update=()=>{
         if(synth.stopped || audioSynth!==synth){clearScoreFollower();return;}
         const elapsed=Math.max(0,synth.context.currentTime-startTime);
         let active=null;
         for(const p of positions){if(p.time<=elapsed+0.015) active=p;else break;}
-        overlays.forEach((line,system)=>{line.style.display=active&&system===active.system?"block":"none";});
         measureMarkers.forEach((marker,system)=>{marker.style.display=active&&system===active.system?"block":"none";});
         if(active){
-            let line=overlays.get(active.system);
-            if(!line){
-                line=document.createElement("div");
-                line.className="fg-playback-cursor";
-                line.setAttribute("aria-hidden","true");
-                active.system.appendChild(line);
-                overlays.set(active.system,line);
-            }
-            line.style.left=active.x+"px";
-            if(active.top!==null && active.height!==null){
-                line.style.top=active.top+"px";
-                line.style.height=active.height+"px";
-            }
-            line.style.display="block";
             let marker=measureMarkers.get(active.system);
             if(!marker){
                 marker=document.createElement("div");
