@@ -451,6 +451,48 @@ function smoothMelody(scale, previous, rhythmText, barIndex){
     return beam[0].seq;
 }
 
+// User-specified melodic pitch collections for the FIRST chord (beats 1–2).
+// The second chord retains its existing pitch selection.
+const FIRST_HALF_PITCHES={
+    4:"F,G,Ab,Bb,C,Eb",  // m.5 Fm7
+    10:"A,B,C,D,E,G",  // m.11 Am7
+    21:"C,D,Eb,F,G,Bb" // m.22 Cm7
+};
+function firstHalfEventCount(i){
+    let eighths=0, count=0;
+    for(const d of eventDurations(i)){
+        if(eighths>=4) break;
+        count++;
+        eighths+=d;
+    }
+    return count;
+}
+function applyFirstHalfPitches(){
+    for(const [key,collection] of Object.entries(FIRST_HALF_PITCHES)){
+        const i=Number(key), count=firstHalfEventCount(i);
+        const pool=collection.split(",").flatMap(candidates);
+        const original=notes[i];
+        if(!original || !pool.length) continue;
+        const tied=new Set(internalTiePositions(i));
+        for(let j=0;j<count;j++){
+            if(j>0 && tied.has(j-1)){
+                original[j]=original[j-1];
+                continue;
+            }
+            const previous=j>0 ? original[j-1] : (i>0 && notes[i-1] ? notes[i-1][notes[i-1].length-1] : null);
+            const next=j===count-1 ? original[j+1] : null;
+            const legal=pool.filter(n=>(!previous || Math.abs(n.m-previous.m)<=12) &&
+                (!next || Math.abs(n.m-next.m)<=12));
+            const options=legal.length?legal:pool;
+            options.sort((a,b)=>{
+                const cost=n=>(previous?Math.abs(n.m-previous.m):0)+(next?Math.abs(n.m-next.m):0);
+                return cost(a)-cost(b);
+            });
+            original[j]=options[0];
+        }
+    }
+}
+
 function makeNotes(){
 
     notes=[];
@@ -485,6 +527,7 @@ function makeNotes(){
             if(j+1<notes[i].length) notes[i][j+1]=notes[i][j];
         }
     }
+    applyFirstHalfPitches();
     // Apply all required boundary ties after melody generation. Each tied
     // boundary receives one shared exact MIDI pitch, never an added duration.
     for(let i=0;i<23;i++){
@@ -540,8 +583,12 @@ function render(){
         const pitches=imp ? "Pitches free" : notes[i].map(x=>x.s).join(" · ");
         const chords=splitGridChords[i];
         if(chords){
-            appendRow(String(i+1),chords[0],r[0],r[1]+" (beats 1–2)",scale,pitches,imp);
-            appendRow(String(i+1)+".1",chords[1],r[0],"Beats 3–4 (same measure)",scale,pitches,imp);
+            const count=imp ? 0 : firstHalfEventCount(i);
+            const firstScale=FIRST_HALF_PITCHES[i] || scale;
+            const firstPitches=imp ? pitches : notes[i].slice(0,count).map(x=>x.s).join(" · ");
+            const secondPitches=imp ? pitches : notes[i].slice(count).map(x=>x.s).join(" · ");
+            appendRow(String(i+1),chords[0],r[0],r[1]+" (beats 1–2)",firstScale,firstPitches,imp);
+            appendRow(String(i+1)+".1",chords[1],r[0],"Beats 3–4 (same measure)",scale,secondPitches,imp);
         }else{
             appendRow(String(i+1),i===1 ? "AbM7" : b[0],r[0],r[1],scale,pitches,imp);
         }
@@ -1724,7 +1771,7 @@ async function playWithSoundFonts(recording=false){
     };
 
     const playMelodyVoice=(midi,start,dur)=>{
-        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.34,melodyMaster);
+        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.10,melodyMaster);
     };
 
     const playAccompanimentChord=(chord,start,dur)=>{
@@ -1732,7 +1779,7 @@ async function playWithSoundFonts(recording=false){
         const barIndex=Math.max(0,Math.min(B.length-1,Math.round((start-startTime)/barDur)));
         const fixedVoicing=ACCOMP_VOICINGS[barIndex];
         const chordNotes=fixedVoicing || padIntervals(primary).map(interval=>chordRootMidi(primary)+interval);
-        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.135,accompanimentMaster));
+        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.19,accompanimentMaster));
     };
 
     // Schedule sustained notes as one attack, including cross-barline ties.
@@ -1747,12 +1794,12 @@ async function playWithSoundFonts(recording=false){
                 10:[[52,55,57,60],[54,57,60,62]], // Am7 / D7
                 21:[[51,55,58,60],[53,56,58,62]] // Cm7 / F7
             };
-            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.135,accompanimentMaster));
-            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.135,accompanimentMaster));
+            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.19,accompanimentMaster));
+            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.19,accompanimentMaster));
         }else if(i===20){
             const halfBar=barDur/2;
-            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.135,accompanimentMaster));
-            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.135,accompanimentMaster));
+            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.19,accompanimentMaster));
+            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.19,accompanimentMaster));
         }else{
             playAccompanimentChord(B[i][0],barStart,barDur);
         }
