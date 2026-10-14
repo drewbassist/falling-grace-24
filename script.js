@@ -509,43 +509,43 @@ function makeNotes(){
 }
 
 function render(){
-
     const t=document.querySelector("#output");
-
     if(!t) return;
-
     t.innerHTML="";
 
-    B.forEach((b,i)=>{
+    // Display-only subdivision of the four two-chord measures.
+    // The music, score, rhythm and playback remain 24 measures long.
+    const splitGridChords={
+        4:["Fm7","Bb7"],
+        10:["Am7","D7"],
+        20:["Dm7","Db7"],
+        21:["Cm7","F7"]
+    };
 
+    const appendRow=(number,chord,rhythmName,rhythm,scale,pitches,improv)=>{
+        const tr=document.createElement("tr");
+        if(improv) tr.className="improv";
+        [number,chord,rhythmName,rhythm,scale,pitches].forEach(value=>{
+            const td=document.createElement("td");
+            td.textContent=value;
+            tr.appendChild(td);
+        });
+        t.appendChild(tr);
+    };
+
+    B.forEach((b,i)=>{
         const imp=(i===5 || i===20);
         const r=ro[i] || R[i];
-        const tr=document.createElement("tr");
-
-        if(imp){
-            tr.className="improv";
+        const scale=imp ? "Player chooses" : sel[i];
+        const pitches=imp ? "Pitches free" : notes[i].map(x=>x.s).join(" · ");
+        const chords=splitGridChords[i];
+        if(chords){
+            appendRow(String(i+1),chords[0],r[0],r[1]+" (beats 1–2)",scale,pitches,imp);
+            appendRow(String(i+1)+".1",chords[1],r[0],"Beats 3–4 (same measure)",scale,pitches,imp);
+        }else{
+            appendRow(String(i+1),i===1 ? "AbM7" : b[0],r[0],r[1],scale,pitches,imp);
         }
-
-        [
-            i+1,
-            i === 1 ? "AbM7" : b[0],
-            r[0],
-            r[1],
-            imp ? "Player chooses" : sel[i],
-            imp
-                ? "Pitches free"
-                : notes[i].map(x=>x.s).join(" · ")
-        ].forEach(v=>{
-
-            const d=document.createElement("td");
-            d.textContent=v;
-            tr.appendChild(d);
-
-        });
-
-        t.appendChild(tr);
     });
-
     renderScore();
 }
 
@@ -1724,7 +1724,7 @@ async function playWithSoundFonts(recording=false){
     };
 
     const playMelodyVoice=(midi,start,dur)=>{
-        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.17,melodyMaster);
+        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.34,melodyMaster);
     };
 
     const playAccompanimentChord=(chord,start,dur)=>{
