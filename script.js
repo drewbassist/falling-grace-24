@@ -1845,7 +1845,7 @@ async function playWithSoundFonts(recording=false){
     hiHatMaster.connect(ctx.destination);
     const melodyMaster=ctx.createGain();
     const accompanimentMaster=ctx.createGain();
-    melodyMaster.gain.value=melodyVolume * 0.75;
+    melodyMaster.gain.value=melodyVolume * 0.50;
     accompanimentMaster.gain.value=accompanimentVolume;
     melodyMaster.connect(ctx.destination);
     accompanimentMaster.connect(ctx.destination);
@@ -2307,7 +2307,7 @@ function modernizeControls(){
     makeVolumeControl("melodyVolume","Melody Vol",melodyVolume,value=>{
         melodyVolume=value;
         if(audioSynth?.melodyMaster){
-            audioSynth.melodyMaster.gain.setValueAtTime(value * 0.75,audioSynth.context.currentTime);
+            audioSynth.melodyMaster.gain.setValueAtTime(value * 0.50,audioSynth.context.currentTime);
         }
     });
     makeVolumeControl("accompanimentVolume","Accomp Vol",accompanimentVolume,value=>{
