@@ -1141,7 +1141,7 @@ function renderScore(){
              * There is NO newline between them.
              */
             abc.push(
-                bars.map((bar,i)=>group===0 && i===0 ? "|: " + bar : group===5 && i===3 ? bar.replace(/\|\s*$/, ":|") : bar).join(" ")
+                bars.join(" ")
             );
 
 
@@ -1161,6 +1161,55 @@ function renderScore(){
                 }
             );
 
+
+            // Display-only repeat signs: drawing them over the existing SVG
+            // avoids ABCJS counting an opening repeat as an extra measure,
+            // which previously pushed measure 4 onto a seventh staff.
+            if(group===0 || group===5){
+                const repeatSvg=system.querySelector("svg");
+                if(repeatSvg){
+                    const ns="http://www.w3.org/2000/svg";
+                    const staff=[...repeatSvg.querySelectorAll(".abcjs-staff")];
+                    const staffBoxes=staff.map(el=>{try{return el.getBBox();}catch(e){return null;}}).filter(Boolean);
+                    const bars=[...repeatSvg.querySelectorAll(".abcjs-bar")];
+                    const barBoxes=bars.map(el=>{try{return el.getBBox();}catch(e){return null;}}).filter(Boolean);
+                    if(staffBoxes.length){
+                        const top=Math.min(...staffBoxes.map(b=>b.y));
+                        const bottom=Math.max(...staffBoxes.map(b=>b.y+b.height));
+                        const spacing=(bottom-top)/4;
+                        const timeSig=repeatSvg.querySelector(".abcjs-time-signature");
+                        let x;
+                        if(group===0){
+                            const ts=timeSig?timeSig.getBBox():null;
+                            const firstNote=repeatSvg.querySelector(".abcjs-m0.abcjs-note, .abcjs-m0 .abcjs-note");
+                            const firstX=firstNote?firstNote.getBBox().x:Infinity;
+                            x=ts?Math.min(ts.x+ts.width+13,firstX-10):firstX-13;
+                        }else{
+                            x=barBoxes.length?Math.max(...barBoxes.map(b=>b.x+b.width))-5:null;
+                        }
+                        if(Number.isFinite(x)){
+                            const g=document.createElementNS(ns,"g");
+                            g.setAttribute("class","fg-display-repeat");
+                            const line=(dx,w)=>{
+                                const e=document.createElementNS(ns,"line");
+                                e.setAttribute("x1",x+dx);e.setAttribute("x2",x+dx);
+                                e.setAttribute("y1",top);e.setAttribute("y2",bottom);
+                                e.setAttribute("stroke","#171717");e.setAttribute("stroke-width",w);
+                                g.appendChild(e);
+                            };
+                            const dot=(dx,y)=>{
+                                const e=document.createElementNS(ns,"circle");
+                                e.setAttribute("cx",x+dx);e.setAttribute("cy",y);
+                                e.setAttribute("r",Math.max(1.7,spacing*.13));
+                                e.setAttribute("fill","#171717");g.appendChild(e);
+                            };
+                            if(group===0){line(0,3.2);line(6,1.1);dot(11,top+1.5*spacing);dot(11,top+2.5*spacing);}
+                            else{dot(-11,top+1.5*spacing);dot(-11,top+2.5*spacing);line(-6,1.1);line(0,3.2);}
+                            repeatSvg.appendChild(g);
+                        }
+                    }
+                }
+            }
 
             // Display-only: make the major-seventh triangle a small raised glyph.
             // The underlying chord data, ABC, and playback remain unchanged.
