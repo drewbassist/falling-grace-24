@@ -2402,7 +2402,7 @@ function setupFgPracticeControls(){
     hat.checked=fgHiHatEnabled;
     hat.addEventListener("change",()=>{fgHiHatEnabled=hat.checked;stopPlayback();});
     hatLabel.append(hat,document.createTextNode(" Hi-hat 2 & 4"));
-    practice.append(modeLabel,mode);
+    practice.append(modeLabel,mode,hatLabel);
     row.parentElement.insertBefore(practice,row);
     // Position the hi-hat immediately after the contour buttons.
     const contour=document.querySelector(".fg-style-buttons");
