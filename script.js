@@ -1759,8 +1759,8 @@ async function playWithSoundFonts(recording=false){
 
         const isRhodes = instrument === melodyInstrument && melodySound === "rhodes";
         // Longer, smooth zero-to-level Rhodes attack suppresses sample transients.
-        // Keep the Steinway envelope unchanged.
-        const fadeIn = isRhodes ? 0.035 : 0.006;
+        // Apply the same 20 ms attack to both instruments; preserve their releases.
+        const fadeIn = 0.020; // 20 ms for both Rhodes and Steinway
         const fadeOut = isRhodes ? 0.075 : 0.035;
         const attackEnd = start + Math.min(fadeIn, dur / 3);
         const releaseStart = Math.max(attackEnd, start + dur - fadeOut);
