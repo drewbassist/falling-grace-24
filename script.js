@@ -2357,10 +2357,13 @@ function arrangeCompactControls(styleButtons){
     if(hatLabel) styleButtons.appendChild(hatLabel);
     const practice=document.querySelector(".fg-practice-options");
     if(practice) middle.appendChild(practice);
+    const volumeRow=document.createElement("div");
+    volumeRow.className="fg-volume-pair";
     ["#melodyVolume-wrap", "#accompanimentVolume-wrap"].forEach(selector=>{
         const control=document.querySelector(selector);
-        if(control) middle.appendChild(control);
+        if(control) volumeRow.appendChild(control);
     });
+    middle.appendChild(volumeRow);
     const actions=document.createElement("div");
     actions.className="fg-generation-actions";
     ["#generate", "#rhythms", "#pentas"].forEach(selector=>{
@@ -2369,6 +2372,9 @@ function arrangeCompactControls(styleButtons){
     });
     middle.appendChild(actions);
     right.appendChild(favorites);
+    // Display the account identity below the favorites controls.
+    const authStatus=document.getElementById("fg-auth-status");
+    if(authStatus) favorites.appendChild(authStatus);
     // Export controls belong below Load Favorite in the account column.
     const exports=document.createElement("div");
     exports.className="fg-export-actions";

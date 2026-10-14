@@ -398,3 +398,25 @@ h1{font-size:48px;margin-bottom:8px}
   #transport .fg-generation-actions{flex-wrap:wrap !important;}
   #transport .fg-composition .fg-style-buttons{flex-wrap:wrap !important;}
 }
+
+/* Compact balanced three-column controls: final scoped layout rules. */
+@media(min-width:1051px){
+ #transport.fg-three-column-panel{padding-top:12px !important;padding-bottom:8px !important}
+ #transport .fg-three-columns{grid-template-columns:minmax(0,31fr) minmax(0,39fr) minmax(0,30fr) !important;column-gap:18px !important;align-items:start !important}
+ #transport .fg-column{min-height:0 !important;gap:12px !important;justify-content:flex-start !important}
+ #transport .fg-column + .fg-column{padding-left:18px !important}
+ #transport .fg-composition .fg-style-buttons,#transport .fg-generation .fg-generation-actions,#transport .fg-account .fg-export-actions{margin-top:8px !important;min-height:40px !important;align-self:stretch !important}
+ #transport .fg-generation .fg-practice-options select{width:175px !important;max-width:175px !important;flex:0 0 175px !important}
+ #transport .fg-volume-pair{display:flex !important;gap:12px !important;align-items:center !important;width:100%;min-width:0}
+ #transport .fg-volume-pair .fg-volume-control{flex:1 1 0 !important;min-width:0 !important;max-width:none !important;gap:5px !important;justify-content:flex-start !important;white-space:nowrap}
+ #transport .fg-volume-pair .fg-volume-control input[type=range]{width:75px !important;min-width:45px !important;max-width:100% !important;flex:1 1 55px !important}
+ #transport .fg-generation-actions{gap:6px !important}
+ #transport .fg-generation-actions button{font-size:12px !important;padding:0 9px !important}
+ #transport .fg-account #fg-favorites{gap:8px !important}
+ #transport .fg-account #fg-auth-status{grid-column:1/-1 !important;grid-row:4 !important;color:#777 !important;font-size:11px !important;order:5 !important}
+ #transport .fg-account .fg-export-actions{margin-top:8px !important}
+ #transport .fg-transport-row{margin-top:12px !important;padding-top:12px !important}
+}
+@media(max-width:1050px){
+ #transport .fg-volume-pair{display:flex;gap:14px;flex-wrap:wrap}
+}
