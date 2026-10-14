@@ -420,3 +420,8 @@ h1{font-size:48px;margin-bottom:8px}
 @media(max-width:1050px){
  #transport .fg-volume-pair{display:flex;gap:14px;flex-wrap:wrap}
 }
+
+/* Compact four-mode selector: only the melodic style buttons change size. */
+#transport .fg-composition .fg-style-buttons{gap:5px !important;flex-wrap:nowrap !important;min-width:0 !important;}
+#transport .fg-composition .fg-style-buttons button{font-size:11px !important;padding:0 7px !important;height:34px !important;min-height:34px !important;white-space:nowrap !important;flex:0 0 auto !important;}
+@media(max-width:600px){#transport .fg-composition .fg-style-buttons{gap:3px !important;}#transport .fg-composition .fg-style-buttons button{font-size:10px !important;padding:0 5px !important;}}

@@ -453,6 +453,57 @@ function smoothMelody(scale, previous, rhythmText, barIndex){
     return beam[0].seq;
 }
 
+// Intervallic preferences use ONLY the five notes of the selected pentatonic.
+// A pattern is rewarded when available, never imposed by adding pitch classes.
+function intervallicMelody(scale, previous, rhythmText, mode){
+    const names=scale.split(',');
+    const count=attackCount(rhythmText);
+    const pool=names.flatMap(candidates);
+    const pc=n=>((n.m%12)+12)%12;
+    const pcs=new Set(pool.map(pc));
+    const triads=[];
+    for(const root of pcs){
+        for(const shape of [[0,4,7],[0,3,7],[0,3,6],[0,4,8]]){
+            const tones=shape.map(i=>(root+i)%12);
+            if(tones.every(x=>pcs.has(x))) triads.push(new Set(tones));
+        }
+    }
+    const quartals=[];
+    for(const root of pcs){
+        const tones=[root,(root+5)%12,(root+10)%12];
+        if(tones.every(x=>pcs.has(x))) quartals.push(new Set(tones));
+    }
+    const cells=mode==='triadic'?triads:quartals;
+    // No complete compatible cell: use the unchanged pentatonic generator.
+    if(!cells.length) return melody(scale,previous,rhythmText);
+    let beam=[{seq:[],last:previous,mask:0,score:0}];
+    for(let j=0;j<count;j++){
+        const next=[];
+        for(const state of beam){
+            let allowed=pool.filter(n=>state.last==null || Math.abs(n.m-state.last.m)<=12);
+            if(!allowed.length && j===0) allowed=pool;
+            for(const n of allowed){
+                const idx=names.indexOf(n.s.replace(/[0-9]/g,''));
+                const bit=idx<0?0:1<<idx;
+                const recent=state.seq.slice(-2).map(pc);
+                const current=pc(n);
+                const matching=cells.some(cell=>cell.has(current)&&recent.length>0&&recent.every(x=>cell.has(x)));
+                const step=state.last==null?0:Math.abs(n.m-state.last.m);
+                const favored=mode==='quartal'?(step===5||step===7):([3,4,7,8,9].includes(step));
+                const score=state.score+((state.mask&bit)?0:4)+ (matching?3.5:0)+ (favored?1.4:0)
+                    -(step===0?1.2:0)-step*.09+Math.random()*.8;
+                next.push({seq:[...state.seq,n],last:n,mask:state.mask|bit,score});
+            }
+        }
+        if(!next.length) return melody(scale,previous,rhythmText);
+        next.sort((a,b)=>b.score-a.score);
+        beam=next.slice(0,110);
+    }
+    const coverage=s=>names.reduce((sum,_,i)=>sum+((s.mask>>i)&1),0);
+    beam.sort((a,b)=>(coverage(b)*9+b.score)-(coverage(a)*9+a.score));
+    return beam[0].seq;
+}
+
 // User-specified melodic pitch collections for the FIRST chord (beats 1–2).
 // The second chord retains its existing pitch selection.
 const FIRST_HALF_PITCHES={
@@ -516,7 +567,9 @@ function makeNotes(){
 
             let n=melodicStyle==="angular"
                 ? melody(sel[i],prev,ro[i][1])
-                : smoothMelody(sel[i],prev,ro[i][1],i);
+                : melodicStyle==="smooth"
+                  ? smoothMelody(sel[i],prev,ro[i][1],i)
+                  : intervallicMelody(sel[i],prev,ro[i][1],melodicStyle);
 
             notes.push(n);
 
@@ -2618,12 +2671,12 @@ if(tempoControl){
    GENERATOR CONTROLS
    ============================================================ */
 
-// Two style buttons only; Angular remains the unchanged default generator.
+// Four exclusive melodic styles; Angular remains the unchanged default generator.
 const styleButtons=document.createElement("div");
 styleButtons.className="fg-style-buttons";
 styleButtons.setAttribute("role","group");
 styleButtons.setAttribute("aria-label","Melodic Style");
-for(const [value,label] of [["angular","Angular"],["smooth","Smooth Contour"]]){
+for(const [value,label] of [["angular","Angular"],["smooth","Smooth"],["triadic","Triadic"],["quartal","Quartal"]]){
     const button=document.createElement("button");
     button.type="button";
     button.textContent=label;

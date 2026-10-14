@@ -23,7 +23,7 @@
       Array.isArray(data.sel) && data.sel.length === 24 &&
       Array.isArray(data.notes) && data.notes.length === 24 &&
       data.notes.every((n,i) => (i === 5 || i === 20) ? n === null : Array.isArray(n)) &&
-      ['angular','smooth'].includes(data.melodicStyle) &&
+      ['angular','smooth','triadic','quartal'].includes(data.melodicStyle) &&
       Array.isArray(data.contourDirections);
   }
   function restore(data) {
@@ -36,8 +36,7 @@
     contourDirections = structuredClone(data.contourDirections);
     render();
     document.querySelectorAll('.fg-style-buttons button').forEach(b => {
-      const t = b.textContent.toLowerCase();
-      if (t.includes('angular') || t.includes('smooth')) b.setAttribute('aria-pressed', String(t.includes(melodicStyle)));
+      b.setAttribute('aria-pressed', String(b.dataset.style === melodicStyle));
     });
   }
   async function refresh() {
