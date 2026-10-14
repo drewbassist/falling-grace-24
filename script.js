@@ -2097,13 +2097,9 @@ function modernizeControls(){
         playParent.appendChild(wrap);
     };
 
-    makeSoundSelect("melodySound","Melody",[
-        ["rhodes","Rhodes"],["vibraphone","Vibraphone"],["warm-synth","Warm Synth"]
-    ],melodySound,value=>{ melodySound=value; });
-
-    makeSoundSelect("accompanimentSound","Accompaniment",[
-        ["piano","Piano"],["rhodes","Rhodes"],["pad","Pad"]
-    ],accompanimentSound,value=>{ accompanimentSound=value; });
+    // Instrument selection is intentionally disabled: Rhodes melody, piano accompaniment.
+    melodySound="rhodes";
+    accompanimentSound="piano";
 
     // Independent playback volume controls only.
     const makeVolumeControl=(id,label,value,onInput)=>{
@@ -2137,24 +2133,6 @@ function modernizeControls(){
             audioSynth.accompanimentMaster.gain.setValueAtTime(value,audioSynth.context.currentTime);
         }
     });
-
-    // Layout only: place each volume slider directly beneath its sound selector.
-    const melodySelectWrap=document.querySelector("#melodySound-wrap");
-    const accompanimentSelectWrap=document.querySelector("#accompanimentSound-wrap");
-    const melodyVolumeWrap=document.querySelector("#melodyVolume-wrap");
-    const accompanimentVolumeWrap=document.querySelector("#accompanimentVolume-wrap");
-
-    const stackControl=(selectWrap,volumeWrap,className)=>{
-        if(!selectWrap || !volumeWrap || selectWrap.parentElement?.classList.contains(className)) return;
-        const stack=document.createElement("div");
-        stack.className="fg-sound-stack "+className;
-        selectWrap.parentNode.insertBefore(stack,selectWrap);
-        stack.appendChild(selectWrap);
-        stack.appendChild(volumeWrap);
-    };
-
-    stackControl(melodySelectWrap,melodyVolumeWrap,"fg-melody-stack");
-    stackControl(accompanimentSelectWrap,accompanimentVolumeWrap,"fg-accompaniment-stack");
 
     // Remove any now-empty wrapper that previously held the generator buttons.
     const candidates=[generate,rhythms,pentas].map(b=>b.parentElement);
@@ -2290,7 +2268,7 @@ function arrangeCompactControls(styleButtons){
     second.appendChild(tempo);
     second.appendChild(range);
     second.appendChild(styleButtons);
-    [".fg-melody-stack", ".fg-accompaniment-stack"].forEach(selector=>{
+    ["#melodyVolume-wrap", "#accompanimentVolume-wrap"].forEach(selector=>{
         const control=document.querySelector(selector);
         if(control) third.appendChild(control);
     });
@@ -2298,16 +2276,9 @@ function arrangeCompactControls(styleButtons){
     originalRow.insertAdjacentElement("afterend",second);
     second.insertAdjacentElement("afterend",third);
 
-    // Place the existing, already-wired playback controls below the score.
-    const scoreSection=document.querySelector("#score-section");
-    if(scoreSection){
-        originalRow.classList.add("fg-bottom-transport");
-        third.insertAdjacentElement("afterend",originalRow);
-        const hint=document.createElement("span");
-        hint.className="fg-space-hint";
-        hint.textContent="Space = Play / Stop";
-        originalRow.appendChild(hint);
-    }
+    // Keep actions immediately beneath compact settings, above the score.
+    third.insertAdjacentElement("afterend",originalRow);
+
 }
 
 async function initApp(){
