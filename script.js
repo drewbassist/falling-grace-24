@@ -227,6 +227,7 @@ let contourDirections=[1,-1,1];
 let audioSynth=null;
 let audioLoading=false;
 let audioState="stopped";
+let wavCapture=null; // Current-iteration recording; independent of score generation.
 let melodySound="rhodes";
 let accompanimentSound="piano";
 let melodyVolume=1;
@@ -1590,7 +1591,7 @@ function startScoreFollower(synth, startTime, beat){
     update();
 }
 
-async function playWithSoundFonts(){
+async function playWithSoundFonts(recording=false){
     const Ctx=window.AudioContext || window.webkitAudioContext;
     if(!Ctx) throw Error("Web Audio is unavailable in this browser");
 
@@ -1609,6 +1610,26 @@ async function playWithSoundFonts(){
     accompanimentMaster.gain.value=accompanimentVolume;
     melodyMaster.connect(ctx.destination);
     accompanimentMaster.connect(ctx.destination);
+    if(recording){
+        if(!window.MediaRecorder || !ctx.createMediaStreamDestination){
+            await ctx.close();
+            throw Error("Audio recording is not supported by this browser.");
+        }
+        const capture=ctx.createMediaStreamDestination();
+        melodyMaster.connect(capture);
+        accompanimentMaster.connect(capture);
+        const mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+            ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+        const recorder=new MediaRecorder(capture.stream,mime?{mimeType:mime}:undefined);
+        const chunks=[];
+        const finished=new Promise((resolve,reject)=>{
+            recorder.ondataavailable=e=>{if(e.data.size) chunks.push(e.data);};
+            recorder.onerror=e=>reject(e.error || Error("Recording failed"));
+            recorder.onstop=()=>resolve(new Blob(chunks,{type:recorder.mimeType}));
+        });
+        wavCapture={recorder,finished,ctx,cancelled:false};
+        recorder.start();
+    }
 
     audioSynth={
         context:ctx,
@@ -1715,6 +1736,13 @@ async function playWithSoundFonts(){
     }
 
     const totalMs=(B.length*barDur+0.2)*1000;
+    if(recording && wavCapture){
+        const capture=wavCapture;
+        // Finish after the final chord has decayed, before the context closes.
+        audioSynth.timeoutIds.push(setTimeout(()=>{
+            if(capture.recorder.state!=="inactive") capture.recorder.stop();
+        },totalMs-60));
+    }
     audioSynth.timeoutIds.push(setTimeout(()=>{
         if(audioSynth && !audioSynth.stopped){
             try{ctx.close();}catch(e){}
@@ -1770,6 +1798,10 @@ async function playPause(){
 
 
 function stopPlayback(){
+    if(wavCapture){
+        wavCapture.cancelled=true;
+        if(wavCapture.recorder.state!=="inactive") wavCapture.recorder.stop();
+    }
     clearScoreFollower();
 
     if(audioSynth){
@@ -1793,6 +1825,70 @@ function stopPlayback(){
     setTransportState("stopped");
 }
 
+
+// Convert the captured performance to an ordinary stereo 16-bit PCM WAV.
+function encodeWav(buffer){
+    const channels=Math.min(2,buffer.numberOfChannels);
+    const samples=buffer.length;
+    const bytes=new ArrayBuffer(44+samples*channels*2);
+    const view=new DataView(bytes);
+    const write=(offset,str)=>{for(let i=0;i<str.length;i++) view.setUint8(offset+i,str.charCodeAt(i));};
+    write(0,"RIFF");view.setUint32(4,36+samples*channels*2,true);
+    write(8,"WAVE");write(12,"fmt ");view.setUint32(16,16,true);
+    view.setUint16(20,1,true);view.setUint16(22,channels,true);
+    view.setUint32(24,buffer.sampleRate,true);
+    view.setUint32(28,buffer.sampleRate*channels*2,true);
+    view.setUint16(32,channels*2,true);view.setUint16(34,16,true);
+    write(36,"data");view.setUint32(40,samples*channels*2,true);
+    let offset=44;
+    const tracks=Array.from({length:channels},(_,i)=>buffer.getChannelData(i));
+    for(let i=0;i<samples;i++) for(let c=0;c<channels;c++){
+        const value=Math.max(-1,Math.min(1,tracks[c][i]));
+        view.setInt16(offset,value<0?value*32768:value*32767,true);
+        offset+=2;
+    }
+    return new Blob([bytes],{type:"audio/wav"});
+}
+
+async function downloadCurrentWav(){
+    const button=document.querySelector("#downloadWav");
+    if(wavCapture || audioLoading) return;
+    if(audioState!=="stopped") stopPlayback();
+    if(button){button.disabled=true;button.textContent="Recording…";}
+    try{
+        audioLoading=true;
+        setTransportState("loading");
+        await playWithSoundFonts(true);
+        const capture=wavCapture;
+        audioLoading=false;
+        setTransportState("playing");
+        const blob=await capture.finished;
+        if(capture.cancelled) return;
+        if(button) button.textContent="Preparing WAV…";
+        const bytes=await blob.arrayBuffer();
+        // Use a separate context because the playback context may already be closed.
+        const Ctx=window.AudioContext||window.webkitAudioContext;
+        const decoder=new Ctx();
+        let decoded;
+        try{decoded=await decoder.decodeAudioData(bytes);}finally{await decoder.close();}
+        const wav=encodeWav(decoded);
+        const url=URL.createObjectURL(wav);
+        const link=document.createElement("a");
+        link.href=url;
+        link.download="Falling-Grace-"+new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")+".wav";
+        document.body.appendChild(link);link.click();link.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+    }catch(error){
+        console.error("WAV export failed",error);
+        const status=document.querySelector("#transport-status");
+        if(status) status.textContent="WAV export failed: "+error.message;
+        if(audioSynth) stopPlayback();
+    }finally{
+        wavCapture=null;
+        audioLoading=false;
+        if(button){button.disabled=false;button.textContent="↓ Download WAV";}
+    }
+}
 
 async function changeTempo(){
 
@@ -1856,7 +1952,16 @@ function modernizeControls(){
     playParent.insertBefore(rhythms,play);
     playParent.insertBefore(pentas,play);
 
-    [generate,rhythms,pentas,play,stop].forEach(button=>{
+    let download=document.querySelector("#downloadWav");
+    if(!download){
+        download=document.createElement("button");
+        download.type="button";
+        download.id="downloadWav";
+        download.textContent="↓ Download WAV";
+        download.addEventListener("click",downloadCurrentWav);
+        playParent.insertBefore(download,stop.nextSibling);
+    }
+    [generate,rhythms,pentas,play,stop,download].forEach(button=>{
         button.classList.add("fg-modern-button");
     });
     generate.classList.add("fg-primary-button");
