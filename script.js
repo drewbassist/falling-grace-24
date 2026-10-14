@@ -1771,7 +1771,7 @@ async function playWithSoundFonts(recording=false){
     };
 
     const playMelodyVoice=(midi,start,dur)=>{
-        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.10,melodyMaster);
+        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.05,melodyMaster);
     };
 
     const playAccompanimentChord=(chord,start,dur)=>{
