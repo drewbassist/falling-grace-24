@@ -1252,7 +1252,13 @@ function renderScore(){
                                 unique[1].x,unique[1].x+halfBeat];
                         }
                         // Hide only the engraved rest glyphs, not their spacing.
-                        restNodes.forEach(el=>{el.style.visibility="hidden";});
+                        restNodes.forEach(el=>{
+                            // Hide the rest symbol only. The ABCJS rest group can
+                            // also contain the chord annotation attached to that
+                            // beat; hiding the whole group erases the chord name.
+                            el.querySelectorAll("path, polygon, rect, ellipse, circle, use")
+                              .forEach(glyph=>{glyph.style.visibility="hidden";});
+                        });
                         const ns="http://www.w3.org/2000/svg";
                         const g=document.createElementNS(ns,"g");
                         g.setAttribute("class","fg-improv-slashes");
