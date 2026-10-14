@@ -226,3 +226,38 @@ h1{font-size:48px;margin-bottom:8px}
 #transport .fg-transport-row #transport-status{margin-left:4px}
 @media(max-width:1150px){#transport .fg-three-columns{grid-template-columns:1fr 1fr;gap:22px}#transport .fg-account{grid-column:1/-1}}
 @media(max-width:700px){#transport .fg-three-columns{grid-template-columns:1fr;gap:22px}#transport .fg-account{grid-column:auto}#transport .fg-transport-row{justify-content:flex-start}}
+
+/* Refined three-column desktop layout. Only control-panel presentation changes. */
+#transport.fg-three-column-panel{padding:24px 0 12px !important;margin:0 0 12px !important}
+#transport .fg-three-columns{display:grid !important;grid-template-columns:minmax(0,30fr) minmax(0,39fr) minmax(0,31fr) !important;column-gap:clamp(20px,3vw,48px) !important;align-items:stretch !important}
+#transport .fg-column{min-width:0 !important;gap:16px !important;align-items:stretch !important}
+#transport .fg-column + .fg-column{border-left:1px solid #dededb;padding-left:clamp(18px,2vw,32px)}
+#transport .fg-composition #tempo-control{min-height:38px;justify-content:flex-start}
+#transport .fg-composition #fg-range{min-height:38px;flex-wrap:nowrap !important;gap:7px !important}
+#transport .fg-composition .fg-style-buttons{min-height:38px;flex-wrap:nowrap}
+#transport .fg-composition .fg-style-buttons button{flex:0 1 auto;white-space:nowrap}
+#transport .fg-generation .fg-volume-control{min-height:38px;display:flex !important;justify-content:space-between !important;gap:14px !important;max-width:310px}
+#transport .fg-generation .fg-volume-control input[type=range]{width:145px !important;max-width:50%}
+#transport .fg-generation-actions{display:flex;flex-wrap:wrap;align-content:start;gap:8px !important;margin-top:0 !important}
+#transport .fg-generation-actions button{font-size:12px !important;height:38px !important;min-height:38px !important;padding:0 12px !important;white-space:nowrap}
+#transport .fg-generation-actions #generate{background:#171717 !important;color:#fff !important;border-color:#171717 !important}
+#transport .fg-account #fg-favorites{display:grid !important;grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-content:stretch;gap:10px !important;width:100%;font-size:12px !important}
+#transport .fg-account #fg-auth-status{grid-column:1 / -1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+#transport .fg-account #fg-sign-in,#transport .fg-account #fg-sign-out{grid-column:2;grid-row:2;justify-self:end}
+#transport .fg-account #fg-save{grid-column:1;grid-row:2;justify-self:start}
+#transport .fg-account #fg-load{grid-column:1;grid-row:3;width:100%;min-width:0}
+#transport .fg-account #fg-delete{grid-column:2;grid-row:3;justify-self:end}
+#transport .fg-account #fg-favorites-message{grid-column:1/-1}
+#transport .fg-transport-row{border-top:1px solid #dededb !important;margin-top:24px !important;padding:16px 0 4px !important;justify-content:center !important}
+#transport .fg-transport-row #transport-status{margin-left:8px}
+@media(max-width:1050px){
+ #transport .fg-three-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;row-gap:26px !important}
+ #transport .fg-account{grid-column:1/-1 !important;border-left:0 !important;border-top:1px solid #dededb;padding:18px 0 0 !important}
+ #transport .fg-account #fg-favorites{max-width:520px}
+}
+@media(max-width:650px){
+ #transport .fg-three-columns{grid-template-columns:minmax(0,1fr) !important}
+ #transport .fg-column{grid-column:1 !important;border-left:0 !important;border-top:1px solid #dededb;padding:18px 0 0 !important}
+ #transport .fg-column:first-child{border-top:0;padding-top:0 !important}
+ #transport .fg-transport-row{justify-content:flex-start !important}
+}
