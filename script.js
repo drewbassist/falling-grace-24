@@ -1761,7 +1761,7 @@ async function playWithSoundFonts(recording=false){
         // Longer, smooth zero-to-level Rhodes attack suppresses sample transients.
         // Apply the same 20 ms attack to both instruments; preserve their releases.
         const fadeIn = 0.020; // 20 ms for both Rhodes and Steinway
-        const fadeOut = isRhodes ? 0.075 : 0.035;
+        const fadeOut = isRhodes ? 0.080 : 0.035;
         const attackEnd = start + Math.min(fadeIn, dur / 3);
         const releaseStart = Math.max(attackEnd, start + dur - fadeOut);
 
@@ -1789,8 +1789,8 @@ async function playWithSoundFonts(recording=false){
         audioSynth.gains.push(gain);
     };
 
-    const playMelodyVoice=(midi,start,dur)=>{
-        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),0.05,melodyMaster);
+    const playMelodyVoice=(midi,start,dur,level=0.05)=>{
+        playSample(melodyInstrument,midi,start,Math.max(0.08,dur),level,melodyMaster);
     };
 
     const playAccompanimentChord=(chord,start,dur)=>{
@@ -1841,7 +1841,14 @@ async function playWithSoundFonts(recording=false){
             ev.dur+=melodyEvents[k].dur;
             melodyEvents[k].consumed=true;
         }
-        playMelodyVoice(ev.m,ev.start,ev.dur);
+        // Connect consecutive Rhodes notes with a 40 ms audio-only overlap.
+        // Do not bridge rests, improvisation bars, or other gaps.
+        const next=melodyEvents.slice(k+1).find(candidate=>!candidate.consumed);
+        const connected=next && Math.abs((ev.start+ev.dur)-next.start)<0.0001;
+        const overlap=connected && melodySound==="rhodes" ? 0.040 : 0;
+        // Deterministic subtle dynamics: reproducible on every playback/export.
+        const dynamics=1+0.05*Math.sin(j*2.399963229728653);
+        playMelodyVoice(ev.m,ev.start,ev.dur+overlap,0.05*dynamics);
     }
 
     const totalMs=(B.length*barDur+0.2)*1000;
