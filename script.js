@@ -1758,19 +1758,30 @@ async function playWithSoundFonts(recording=false){
         source.playbackRate.setValueAtTime(found.rate,start);
 
         const isRhodes = instrument === melodyInstrument && melodySound === "rhodes";
+        // Longer, smooth zero-to-level Rhodes attack suppresses sample transients.
+        // Keep the Steinway envelope unchanged.
+        const fadeIn = isRhodes ? 0.035 : 0.006;
+        const fadeOut = isRhodes ? 0.075 : 0.035;
+        const attackEnd = start + Math.min(fadeIn, dur / 3);
+        const releaseStart = Math.max(attackEnd, start + dur - fadeOut);
 
-const fadeIn = isRhodes ? 0.015 : 0.006;
-const fadeOut = isRhodes ? 0.040 : 0.035;
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(level, attackEnd);
+        gain.gain.setValueAtTime(level, releaseStart);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
 
-const attackEnd = start + Math.min(fadeIn, dur / 3);
-const releaseStart = Math.max(attackEnd, start + dur - fadeOut);
-
-gain.gain.setValueAtTime(0.0001, start);
-gain.gain.exponentialRampToValueAtTime(level, attackEnd);
-gain.gain.setValueAtTime(level, releaseStart);
-gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-
-        source.connect(gain);
+        // Filter only the Rhodes to attenuate high-frequency sample clicks.
+        // This is a playback effect; original recordings remain untouched.
+        if(isRhodes){
+            const rhodesFilter=ctx.createBiquadFilter();
+            rhodesFilter.type="lowpass";
+            rhodesFilter.frequency.value=3800;
+            rhodesFilter.Q.value=0.5;
+            source.connect(rhodesFilter);
+            rhodesFilter.connect(gain);
+        }else{
+            source.connect(gain);
+        }
         gain.connect(destination);
         source.start(start);
         source.stop(start+dur+0.02);
