@@ -292,3 +292,51 @@ h1{font-size:48px;margin-bottom:8px}
 #transport .fg-account .fg-export-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;margin-top:8px;}
 #transport .fg-account .fg-export-actions button{height:38px !important;min-height:38px !important;padding:0 14px !important;white-space:nowrap;}
 @media(max-width:1250px){#transport .fg-composition .fg-style-buttons{flex-wrap:wrap !important;}#transport .fg-composition .fg-hat-option{margin-left:0 !important;}}
+
+/* Aligned three-column action baseline and unified Play/Stop button styling. */
+@media (min-width:1051px){
+  #transport .fg-three-columns{align-items:stretch !important;}
+  #transport .fg-column{display:flex !important;flex-direction:column !important;}
+  #transport .fg-composition .fg-style-buttons,
+  #transport .fg-generation .fg-generation-actions,
+  #transport .fg-account .fg-export-actions{
+    margin-top:auto !important;
+    margin-bottom:0 !important;
+    min-height:40px;
+    align-items:center !important;
+  }
+}
+#transport .fg-style-buttons button,
+#transport .fg-generation-actions button,
+#transport .fg-export-actions button,
+#transport .fg-transport-row button,
+#transport #fg-favorites button{
+  box-sizing:border-box !important;
+  height:40px !important;
+  min-height:40px !important;
+  padding:0 16px !important;
+  border-radius:7px !important;
+  border:1px solid #d1d1d1 !important;
+  background:#fff !important;
+  color:#171717 !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.035) !important;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:14px !important;
+  font-weight:600 !important;
+  line-height:1.2 !important;
+  white-space:nowrap;
+}
+#transport .fg-generation-actions #generate,
+#transport .fg-style-buttons button[aria-pressed="true"],
+#transport .fg-transport-row #playPause{
+  background:#171717 !important;
+  color:#fff !important;
+  border-color:#171717 !important;
+}
+#transport .fg-style-buttons button[aria-pressed="false"]{
+  background:#fff !important;
+  color:#171717 !important;
+}
+#transport .fg-composition .fg-style-buttons{min-height:40px !important;}
+#transport .fg-composition .fg-hat-option{font-size:14px !important;}
+#transport .fg-account .fg-export-actions{margin-top:auto !important;}
