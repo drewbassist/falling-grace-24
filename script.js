@@ -547,11 +547,25 @@ function applyFirstHalfPitches(){
             const legal=pool.filter(n=>(!previous || Math.abs(n.m-previous.m)<=12) &&
                 (!next || Math.abs(n.m-next.m)<=12));
             const options=legal.length?legal:pool;
-            options.sort((a,b)=>{
-                const cost=n=>(previous?Math.abs(n.m-previous.m):0)+(next?Math.abs(n.m-next.m):0);
-                return cost(a)-cost(b);
-            });
-            original[j]=options[0];
+            // The first-half pitch override must not collapse into a single
+            // nearest note. Prefer distinct pitches while preserving its
+            // explicitly specified collection and octave/leap restrictions.
+            const earlier=original.slice(0,j);
+            const used=new Set(earlier.map(n=>n.m%12));
+            const last=previous && previous.m;
+            const ranked=options.map(n=>{
+                const leap=previous?Math.abs(n.m-previous.m):0;
+                const nextLeap=next?Math.abs(n.m-next.m):0;
+                const repeat=last===n.m;
+                const pcRepeat=previous && previous.m%12===n.m%12;
+                const novelty=!used.has(n.m%12);
+                const intervalBonus=(melodicStyle==='quartal' && (leap===5||leap===7)) ||
+                    (melodicStyle==='triadic' && [3,4,7,8,9].includes(leap));
+                return {n,score:(repeat?-100:0)+(pcRepeat?-25:0)+
+                    (novelty?12:0)+(intervalBonus?8:0)-leap*.32-nextLeap*.12+
+                    Math.random()*1.5};
+            }).sort((a,b)=>b.score-a.score);
+            original[j]=ranked[0].n;
         }
     }
 }
