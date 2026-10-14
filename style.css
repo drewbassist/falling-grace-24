@@ -208,3 +208,21 @@ h1{font-size:48px;margin-bottom:8px}
 #transport #transport-status{font-size:12px}
 #score-section{margin-top:0}
 @media(max-width:700px){h1{font-size:38px}.page{padding-top:18px}}
+
+/* Three-column control layout, with dedicated transport beneath. */
+#transport.fg-three-column-panel{padding:14px 0 8px !important;margin-bottom:8px !important}
+#transport .fg-three-columns{display:grid;grid-template-columns:minmax(330px,1.1fr) minmax(360px,1.2fr) minmax(310px,1fr);gap:28px;align-items:start}
+#transport .fg-column{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
+#transport .fg-composition #tempo-control{margin:0 !important}
+#transport .fg-composition #fg-range{margin:0 !important}
+#transport .fg-composition .fg-style-buttons{margin:0 !important}
+#transport .fg-generation .fg-volume-control{margin:0 !important}
+#transport .fg-generation-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+#transport .fg-generation-actions button{min-height:36px !important;padding:0 10px !important;font-size:12px !important}
+#transport .fg-account #fg-favorites{display:flex;flex-wrap:wrap;align-items:center;gap:8px !important;margin:0 !important;padding:0 !important;border:0 !important;flex:none !important}
+#transport .fg-account #fg-auth-status{flex-basis:100%;font-size:12px}
+#transport .fg-transport-row{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:20px;padding:12px 0 4px;border-top:1px solid #dededb;flex-wrap:wrap}
+#transport .fg-transport-row button{height:38px !important;min-height:38px !important;padding:0 16px !important}
+#transport .fg-transport-row #transport-status{margin-left:4px}
+@media(max-width:1150px){#transport .fg-three-columns{grid-template-columns:1fr 1fr;gap:22px}#transport .fg-account{grid-column:1/-1}}
+@media(max-width:700px){#transport .fg-three-columns{grid-template-columns:1fr;gap:22px}#transport .fg-account{grid-column:auto}#transport .fg-transport-row{justify-content:flex-start}}

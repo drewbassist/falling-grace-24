@@ -2257,28 +2257,29 @@ function arrangeCompactControls(styleButtons){
     const tempo=document.querySelector("#tempo-control");
     if(!transport || !originalRow || !range || !favorites || !tempo) return;
 
-    transport.classList.add("fg-compact-panel");
-    originalRow.classList.add("fg-compact-actions");
-    const second=document.createElement("div");
-    second.className="fg-compact-row fg-compact-settings";
-    const third=document.createElement("div");
-    third.className="fg-compact-row fg-compact-audio-favorites";
-
-    // Move the already-wired nodes without touching their state or handlers.
-    second.appendChild(tempo);
-    second.appendChild(range);
-    second.appendChild(styleButtons);
+    transport.classList.add("fg-compact-panel", "fg-three-column-panel");
+    const columns=document.createElement("div");
+    columns.className="fg-three-columns";
+    const left=document.createElement("div"); left.className="fg-column fg-composition";
+    const middle=document.createElement("div"); middle.className="fg-column fg-generation";
+    const right=document.createElement("div"); right.className="fg-column fg-account";
+    // Reparent original interactive elements, preserving listeners and IDs.
+    left.append(tempo,range,styleButtons);
     ["#melodyVolume-wrap", "#accompanimentVolume-wrap"].forEach(selector=>{
         const control=document.querySelector(selector);
-        if(control) third.appendChild(control);
+        if(control) middle.appendChild(control);
     });
-    third.appendChild(favorites);
-    originalRow.insertAdjacentElement("afterend",second);
-    second.insertAdjacentElement("afterend",third);
-
-    // Keep actions immediately beneath compact settings, above the score.
-    third.insertAdjacentElement("afterend",originalRow);
-
+    const actions=document.createElement("div");
+    actions.className="fg-generation-actions";
+    ["#generate", "#rhythms", "#pentas"].forEach(selector=>{
+        const button=document.querySelector(selector);
+        if(button) actions.appendChild(button);
+    });
+    middle.appendChild(actions);
+    right.appendChild(favorites);
+    columns.append(left,middle,right);
+    transport.insertBefore(columns,originalRow);
+    originalRow.classList.add("fg-transport-row");
 }
 
 async function initApp(){
