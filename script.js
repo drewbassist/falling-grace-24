@@ -902,7 +902,7 @@ function buildABC(){
 
         if(i===5 || i===20){
 
-            bar=i===5 ? `"Eb/G" z4 "D7/F#" z4 |` : `"${chord}" z8 |`;
+            bar=i===5 ? `"Eb/G" z2 z2 "D7/F#" z2 z2 |` : `"${chord}" z8 |`;
 
         }else{
 
@@ -1075,7 +1075,7 @@ function renderScore(){
                 if(i===20){
                     bar=`"Dm7" z4 "Db7" z4 |`;
                 }else if(i===5){
-                    bar=`"Eb/G" z4 "D7/F#" z4 |`;
+                    bar=`"Eb/G" z2 z2 "D7/F#" z2 z2 |`;
                 }else{
                     bar=`"${chord}" ${abcMeasure(i)} |`;
                 }
