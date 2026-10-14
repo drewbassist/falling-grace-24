@@ -859,7 +859,11 @@ function abcMeasure(index){
     // Engraving only: consolidate internal eighth+quarter ties into a
     // dotted quarter, but never across the midpoint of the 4/4 bar.
     // Keep the original event indices for all remaining tie positions.
-    const tiePositions=internalTiePositions(index);
+    // Only engrave an internal tie when its two generated MIDI pitches match.
+    // This prevents an ABC tie marker from appearing as a slur after pitch edits.
+    const tiePositions=internalTiePositions(index).filter(j=>
+        j+1<pitches.length && pitches[j].m===pitches[j+1].m
+    );
     const engraved=[];
     for(let i=0;i<events.length;i++){
         const first=events[i];
