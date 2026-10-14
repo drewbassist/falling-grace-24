@@ -971,7 +971,7 @@ function buildABC(){
      */
     return [
         ...header,
-        bars.join(" ")
+        bars.map((bar,i)=>i===0 ? "|: " + bar : i===23 ? bar.replace(/\|\s*$/, ":|") : bar).join(" ")
     ].join("\n");
 }
 
@@ -1141,7 +1141,7 @@ function renderScore(){
              * There is NO newline between them.
              */
             abc.push(
-                bars.join(" ")
+                bars.map((bar,i)=>group===0 && i===0 ? "|: " + bar : group===5 && i===3 ? bar.replace(/\|\s*$/, ":|") : bar).join(" ")
             );
 
 
@@ -1652,7 +1652,7 @@ function startScoreFollower(synth, startTime, beat){
     const measureMarkers=new Map();
     const update=()=>{
         if(synth.stopped || audioSynth!==synth){clearScoreFollower();return;}
-        const elapsed=Math.max(0,synth.context.currentTime-startTime);
+        const elapsed=Math.max(0,synth.context.currentTime-startTime) % (24*4*beat);
         let active=null;
         for(const p of positions){if(p.time<=elapsed+0.015) active=p;else break;}
         measureMarkers.forEach((marker,system)=>{marker.style.display=active&&system===active.system?"block":"none";});
@@ -1795,7 +1795,7 @@ async function playWithSoundFonts(recording=false){
 
     const playAccompanimentChord=(chord,start,dur)=>{
         const primary=String(chord).trim().split(/\s{2,}/)[0];
-        const barIndex=Math.max(0,Math.min(B.length-1,Math.round((start-startTime)/barDur)));
+        const barIndex=Math.max(0,Math.min(B.length-1,Math.round((start-startTime)/barDur) % B.length));
         const fixedVoicing=ACCOMP_VOICINGS[barIndex];
         const chordNotes=fixedVoicing || padIntervals(primary).map(interval=>chordRootMidi(primary)+interval);
         chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.19,accompanimentMaster));
@@ -1803,8 +1803,8 @@ async function playWithSoundFonts(recording=false){
 
     // Schedule sustained notes as one attack, including cross-barline ties.
     const melodyEvents=[];
-    for(let i=0;i<B.length;i++){
-        const barStart=startTime+i*barDur;
+    for(let pass=0;pass<2;pass++) for(let i=0;i<B.length;i++){
+        const barStart=startTime+(pass*B.length+i)*barDur;
         if([4,5,10,21].includes(i)){
             const halfBar=barDur/2;
             const pairs={
@@ -1851,7 +1851,7 @@ async function playWithSoundFonts(recording=false){
         playMelodyVoice(ev.m,ev.start,ev.dur+overlap,0.05*dynamics);
     }
 
-    const totalMs=(B.length*barDur+0.2)*1000;
+    const totalMs=(2*B.length*barDur+0.2)*1000;
     if(recording && wavCapture){
         const capture=wavCapture;
         // Finish after the final chord has decayed, before the context closes.
