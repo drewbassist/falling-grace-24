@@ -2351,6 +2351,10 @@ function arrangeCompactControls(styleButtons){
     const right=document.createElement("div"); right.className="fg-column fg-account";
     // Reparent original interactive elements, preserving listeners and IDs.
     left.append(tempo,range,styleButtons);
+    // The contour buttons are created after practice setup, so move the
+    // already-wired hi-hat checkbox here once the contour row exists.
+    const hatLabel=document.querySelector(".fg-hat-option");
+    if(hatLabel) styleButtons.appendChild(hatLabel);
     const practice=document.querySelector(".fg-practice-options");
     if(practice) middle.appendChild(practice);
     ["#melodyVolume-wrap", "#accompanimentVolume-wrap"].forEach(selector=>{
@@ -2365,6 +2369,14 @@ function arrangeCompactControls(styleButtons){
     });
     middle.appendChild(actions);
     right.appendChild(favorites);
+    // Export controls belong below Load Favorite in the account column.
+    const exports=document.createElement("div");
+    exports.className="fg-export-actions";
+    for(const id of ["downloadWav","downloadPdf"]){
+        const button=document.getElementById(id);
+        if(button) exports.appendChild(button);
+    }
+    right.appendChild(exports);
     columns.append(left,middle,right);
     transport.insertBefore(columns,originalRow);
     originalRow.classList.add("fg-transport-row");

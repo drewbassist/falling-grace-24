@@ -284,3 +284,11 @@ h1{font-size:48px;margin-bottom:8px}
 #transport .fg-generation .fg-practice-options{display:flex;justify-content:flex-start;align-items:center;flex-wrap:wrap;gap:8px;margin:0 !important;min-height:38px;font:13px Arial,sans-serif;}
 #transport .fg-generation .fg-practice-options select{height:38px;max-width:260px;min-width:0;flex:1 1 160px;}
 #transport .fg-generation{justify-content:flex-start;}
+
+/* Final layout polish: clear header spacing and account-column exports. */
+.header{margin-bottom:26px !important;}
+#transport .fg-composition .fg-style-buttons{flex-wrap:nowrap !important;gap:10px !important;}
+#transport .fg-composition .fg-hat-option{margin-left:14px !important;font-size:13px !important;white-space:nowrap;}
+#transport .fg-account .fg-export-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;margin-top:8px;}
+#transport .fg-account .fg-export-actions button{height:38px !important;min-height:38px !important;padding:0 14px !important;white-space:nowrap;}
+@media(max-width:1250px){#transport .fg-composition .fg-style-buttons{flex-wrap:wrap !important;}#transport .fg-composition .fg-hat-option{margin-left:0 !important;}}
