@@ -233,8 +233,8 @@ let accompanimentSound="piano";
 let melodyVolume=1;
 let accompanimentVolume=1;
 
-let melodyLowMidi=57; // A3
-let melodyHighMidi=84; // C6
+let melodyLowMidi=60; // A3
+let melodyHighMidi=79; // C6
 
 function setupMelodyRange(){
     const low=document.getElementById("fg-low");
