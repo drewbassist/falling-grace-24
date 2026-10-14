@@ -261,3 +261,19 @@ h1{font-size:48px;margin-bottom:8px}
  #transport .fg-column:first-child{border-top:0;padding-top:0 !important}
  #transport .fg-transport-row{justify-content:flex-start !important}
 }
+
+/* Practice controls and score-only PDF printing */
+#transport .fg-practice-options{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px 14px;margin:12px 0 0;font:13px Arial,sans-serif}
+#transport .fg-practice-options select{height:34px;max-width:250px;border:1px solid #ccc;border-radius:5px;background:#fff;padding:0 8px;font:13px Arial,sans-serif}
+#transport .fg-practice-options .fg-hat-option{display:flex;align-items:center;gap:4px;white-space:nowrap;cursor:pointer}
+#transport #downloadPdf{height:38px;min-height:38px;padding:0 16px}
+@media print{
+ @page{size:landscape;margin:9mm}
+ body{background:#fff!important}
+ .page{width:100%!important;margin:0!important;padding:0!important}
+ .header,.rule,.subhead,#transport,#fg-range,#fg-favorites,table{display:none!important}
+ #score-section{display:block!important;overflow:visible!important;padding:0!important;margin:0!important}
+ #score,.score-systems{width:100%!important}
+ #score .score-system{break-inside:avoid;page-break-inside:avoid;margin:0 auto!important;width:95%!important;max-width:95%!important;overflow:visible!important}
+ #score .score-system svg{max-width:100%!important}
+}

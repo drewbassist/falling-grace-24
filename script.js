@@ -232,6 +232,8 @@ let melodySound="rhodes";
 let accompanimentSound="piano";
 let melodyVolume=1;
 let accompanimentVolume=1;
+let fgPracticeMode="normal"; // normal, mute, trade
+let fgHiHatEnabled=false;
 
 let melodyLowMidi=60; // A3
 let melodyHighMidi=79; // C6
@@ -1741,6 +1743,9 @@ async function playWithSoundFonts(recording=false){
         accompanimentSound==="piano" ? loadIowaSteinway(ctx) : loadSoundFontInstrument(ctx,accompanimentProgram)
     ]);
 
+    const hiHatMaster=ctx.createGain();
+    hiHatMaster.gain.value=0.12;
+    hiHatMaster.connect(ctx.destination);
     const melodyMaster=ctx.createGain();
     const accompanimentMaster=ctx.createGain();
     melodyMaster.gain.value=melodyVolume * 0.75;
@@ -1755,6 +1760,7 @@ async function playWithSoundFonts(recording=false){
         const capture=ctx.createMediaStreamDestination();
         melodyMaster.connect(capture);
         accompanimentMaster.connect(capture);
+        hiHatMaster.connect(capture);
         const mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
             ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
         const recorder=new MediaRecorder(capture.stream,mime?{mimeType:mime}:undefined);
@@ -1850,6 +1856,30 @@ async function playWithSoundFonts(recording=false){
         chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.19,accompanimentMaster));
     };
 
+    // Short, dry synthesized closed hi-hat on beats 2 and 4 only.
+    // Generated once per playback; no samples or network dependencies.
+    if(fgHiHatEnabled){
+        const sampleRate=ctx.sampleRate;
+        const hatLength=Math.round(sampleRate*0.065);
+        const noise=ctx.createBuffer(1,hatLength,sampleRate);
+        const channel=noise.getChannelData(0);
+        for(let n=0;n<hatLength;n++) channel[n]=(Math.random()*2-1)*Math.exp(-n/(sampleRate*0.012));
+        for(let bar=0;bar<B.length*2;bar++) for(const hit of [1,3]){
+            const when=startTime+(bar*4+hit)*beat;
+            const source=ctx.createBufferSource();
+            const highpass=ctx.createBiquadFilter();
+            highpass.type="highpass";highpass.frequency.value=6500;
+            const gain=ctx.createGain();
+            gain.gain.setValueAtTime(0.0001,when);
+            gain.gain.linearRampToValueAtTime(hit===3?0.42:0.35,when+0.002);
+            gain.gain.exponentialRampToValueAtTime(0.0001,when+0.06);
+            source.buffer=noise;
+            source.connect(highpass);highpass.connect(gain);gain.connect(hiHatMaster);
+            source.start(when);source.stop(when+0.065);
+            audioSynth.sources.push(source);audioSynth.gains.push(gain);
+        }
+    }
+
     // Schedule sustained notes as one attack, including cross-barline ties.
     const melodyEvents=[];
     for(let pass=0;pass<2;pass++) for(let i=0;i<B.length;i++){
@@ -1871,7 +1901,7 @@ async function playWithSoundFonts(recording=false){
         }else{
             playAccompanimentChord(B[i][0],barStart,barDur);
         }
-        if(i===5 || i===20) continue;
+        if(i===5 || i===20 || fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1)) continue;
         let pos=0;
         eventDurations(i).forEach((units,j)=>{
             melodyEvents.push({m:notes[i][j].m,start:barStart+pos*beat/2,dur:units*beat/2,
@@ -2338,10 +2368,41 @@ function arrangeCompactControls(styleButtons){
     originalRow.classList.add("fg-transport-row");
 }
 
+function setupFgPracticeControls(){
+    const row=document.querySelector("#transport-controls");
+    if(!row || document.querySelector("#fg-practice-mode")) return;
+    const practice=document.createElement("div");
+    practice.className="fg-practice-options";
+    const modeLabel=document.createElement("label");
+    modeLabel.htmlFor="fg-practice-mode";
+    modeLabel.textContent="Practice";
+    const mode=document.createElement("select");
+    mode.id="fg-practice-mode";
+    for(const [value,label] of [["normal","Normal"],["mute","Mute melody"],["trade","Trade: melody 1st / you 2nd"]]){
+        const option=document.createElement("option");option.value=value;option.textContent=label;mode.appendChild(option);
+    }
+    mode.value=fgPracticeMode;
+    mode.addEventListener("change",()=>{fgPracticeMode=mode.value;stopPlayback();});
+    const hatLabel=document.createElement("label");hatLabel.className="fg-hat-option";
+    const hat=document.createElement("input");hat.type="checkbox";hat.id="fg-hi-hat";
+    hat.checked=fgHiHatEnabled;
+    hat.addEventListener("change",()=>{fgHiHatEnabled=hat.checked;stopPlayback();});
+    hatLabel.append(hat,document.createTextNode(" Hi-hat 2 & 4"));
+    practice.append(modeLabel,mode,hatLabel);
+    row.parentElement.insertBefore(practice,row);
+    const pdf=document.createElement("button");pdf.type="button";pdf.id="downloadPdf";
+    pdf.className="fg-modern-button";pdf.textContent="↓ PDF";
+    pdf.title="Print score or save as PDF";
+    pdf.addEventListener("click",()=>window.print());
+    const wav=document.querySelector("#downloadWav");
+    if(wav) wav.insertAdjacentElement("afterend",pdf);else row.appendChild(pdf);
+}
+
 async function initApp(){
 
     updateDisplayLabels();
     modernizeControls();
+    setupFgPracticeControls();
     setupMelodyRange();
 
 /* ============================================================
