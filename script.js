@@ -461,47 +461,57 @@ function intervallicMelody(scale, previous, rhythmText, mode){
     const pool=names.flatMap(candidates);
     const pc=n=>((n.m%12)+12)%12;
     const pcs=new Set(pool.map(pc));
-    const triads=[];
+    const cells=[];
     for(const root of pcs){
-        for(const shape of [[0,4,7],[0,3,7],[0,3,6],[0,4,8]]){
-            const tones=shape.map(i=>(root+i)%12);
-            if(tones.every(x=>pcs.has(x))) triads.push(new Set(tones));
+        const shapes=mode==='triadic'
+            ? [[0,4,7],[0,3,7],[0,3,6],[0,4,8]]
+            : [[0,5,10]];
+        for(const shape of shapes){
+            const tones=shape.map(x=>(root+x)%12);
+            if(tones.every(x=>pcs.has(x))) cells.push(new Set(tones));
         }
     }
-    const quartals=[];
-    for(const root of pcs){
-        const tones=[root,(root+5)%12,(root+10)%12];
-        if(tones.every(x=>pcs.has(x))) quartals.push(new Set(tones));
-    }
-    const cells=mode==='triadic'?triads:quartals;
-    // No complete compatible cell: use the unchanged pentatonic generator.
-    if(!cells.length) return melody(scale,previous,rhythmText);
+    // When the pentatonic contains no complete cell, retain the original
+    // generator's full pitch-class rotation rather than forcing a structure.
+    if(!cells.length || count<3) return melody(scale,previous,rhythmText);
+    // The incoming previous pitch is a MIDI NUMBER; candidates are note objects.
+    // Preserve this distinction to avoid NaN distances and degenerate paths.
     let beam=[{seq:[],last:previous,mask:0,score:0}];
     for(let j=0;j<count;j++){
         const next=[];
         for(const state of beam){
-            let allowed=pool.filter(n=>state.last==null || Math.abs(n.m-state.last.m)<=12);
-            if(!allowed.length && j===0) allowed=pool;
+            let allowed=pool.filter(n=>state.last==null || Math.abs(n.m-state.last)<=12);
+            if(!allowed.length && j===0){
+                const distance=Math.min(...pool.map(n=>Math.abs(n.m-state.last)));
+                allowed=pool.filter(n=>Math.abs(n.m-state.last)===distance);
+            }
             for(const n of allowed){
                 const idx=names.indexOf(n.s.replace(/[0-9]/g,''));
                 const bit=idx<0?0:1<<idx;
                 const recent=state.seq.slice(-2).map(pc);
                 const current=pc(n);
-                const matching=cells.some(cell=>cell.has(current)&&recent.length>0&&recent.every(x=>cell.has(x)));
-                const step=state.last==null?0:Math.abs(n.m-state.last.m);
+                const distinct=recent.length>0 && !recent.includes(current);
+                const matching=distinct && cells.some(cell=>cell.has(current)&&recent.every(x=>cell.has(x)));
+                const step=state.last==null?0:Math.abs(n.m-state.last);
                 const favored=mode==='quartal'?(step===5||step===7):([3,4,7,8,9].includes(step));
-                const score=state.score+((state.mask&bit)?0:4)+ (matching?3.5:0)+ (favored?1.4:0)
-                    -(step===0?1.2:0)-step*.09+Math.random()*.8;
-                next.push({seq:[...state.seq,n],last:n,mask:state.mask|bit,score});
+                const repeated=state.seq.length>0 && state.seq[state.seq.length-1].m===n.m;
+                const score=state.score + ((state.mask&bit)?0:7)
+                    + (matching?3.5:0) + (favored?2.0:0)
+                    - (repeated?12:0) - (step===0?3:0) - step*.12
+                    + Math.random()*.65;
+                next.push({seq:[...state.seq,n],last:n.m,mask:state.mask|bit,score});
             }
         }
         if(!next.length) return melody(scale,previous,rhythmText);
         next.sort((a,b)=>b.score-a.score);
-        beam=next.slice(0,110);
+        beam=next.slice(0,160);
     }
     const coverage=s=>names.reduce((sum,_,i)=>sum+((s.mask>>i)&1),0);
-    beam.sort((a,b)=>(coverage(b)*9+b.score)-(coverage(a)*9+a.score));
-    return beam[0].seq;
+    beam.sort((a,b)=>(coverage(b)*18+b.score)-(coverage(a)*18+a.score));
+    const best=beam[0];
+    // Do not sacrifice pentatonic coverage for an intervallic preference.
+    if(count>=5 && coverage(best)<5) return melody(scale,previous,rhythmText);
+    return best.seq;
 }
 
 // User-specified melodic pitch collections for the FIRST chord (beats 1–2).
