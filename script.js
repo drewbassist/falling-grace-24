@@ -1757,10 +1757,18 @@ async function playWithSoundFonts(recording=false){
         source.buffer=found.buffer;
         source.playbackRate.setValueAtTime(found.rate,start);
 
-        gain.gain.setValueAtTime(0.0001,start);
-        gain.gain.exponentialRampToValueAtTime(level,start+0.006);
-        gain.gain.setValueAtTime(level,start+Math.max(0.01,dur-0.035));
-        gain.gain.exponentialRampToValueAtTime(0.0001,start+dur);
+        const isRhodes = instrument === melodyInstrument && melodySound === "rhodes";
+
+const fadeIn = isRhodes ? 0.015 : 0.006;
+const fadeOut = isRhodes ? 0.040 : 0.035;
+
+const attackEnd = start + Math.min(fadeIn, dur / 3);
+const releaseStart = Math.max(attackEnd, start + dur - fadeOut);
+
+gain.gain.setValueAtTime(0.0001, start);
+gain.gain.exponentialRampToValueAtTime(level, attackEnd);
+gain.gain.setValueAtTime(level, releaseStart);
+gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
 
         source.connect(gain);
         gain.connect(destination);
