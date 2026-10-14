@@ -527,7 +527,7 @@ function render(){
 
         [
             i+1,
-            b[0],
+            i === 1 ? "AbM7" : b[0],
             r[0],
             r[1],
             imp ? "Player chooses" : sel[i],
