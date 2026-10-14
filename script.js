@@ -1441,6 +1441,27 @@ async function loadSoundFontInstrument(ctx,program){
     return promise;
 }
 
+// Independently recorded Iowa Steinway Model B notes (C3–B5, mezzo-forte).
+// Each MIDI note maps to its own recording; no transposition or pitch shifting.
+const IOWA_STEINWAY_BASE="assets/instruments/iowa-steinway/";
+function loadIowaSteinway(ctx){
+    const key="iowa-steinway@"+ctx.sampleRate;
+    if(soundFontCache.has(key)) return soundFontCache.get(key);
+    const promise=(async()=>{
+        const decoded={};
+        const names=["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+        await Promise.all([3,4,5].flatMap(octave=>names.map(async note=>{
+            const pitch=note+octave;
+            const response=await fetch(IOWA_STEINWAY_BASE+pitch+".mp3");
+            if(!response.ok) throw Error("Could not load Steinway sample: "+pitch);
+            decoded[pitch]=await ctx.decodeAudioData(await response.arrayBuffer());
+        })));
+        return decoded;
+    })();
+    soundFontCache.set(key,promise);
+    return promise;
+}
+
 function soundFontBufferForMidi(instrument,midi){
     const exact=midiNoteName(midi);
     if(instrument[exact]) return {buffer:instrument[exact],rate:1};
@@ -1601,7 +1622,7 @@ async function playWithSoundFonts(recording=false){
 
     const [melodyInstrument,accompanimentInstrument]=await Promise.all([
         loadSoundFontInstrument(ctx,melodyProgram),
-        loadSoundFontInstrument(ctx,accompanimentProgram)
+        accompanimentSound==="piano" ? loadIowaSteinway(ctx) : loadSoundFontInstrument(ctx,accompanimentProgram)
     ]);
 
     const melodyMaster=ctx.createGain();
@@ -1659,7 +1680,9 @@ async function playWithSoundFonts(recording=false){
 
     const playSample=(instrument,midi,start,dur,level,destination)=>{
         if(audioSynth.stopped) return;
-        const found=soundFontBufferForMidi(instrument,midi);
+        const found=(instrument===accompanimentInstrument && accompanimentSound==="piano")
+            ? (instrument[midiNoteName(midi)] ? {buffer:instrument[midiNoteName(midi)],rate:1} : null)
+            : soundFontBufferForMidi(instrument,midi);
         if(!found) return;
 
         const source=ctx.createBufferSource();
