@@ -1462,6 +1462,26 @@ function loadIowaSteinway(ctx){
     return promise;
 }
 
+// Warm 1977 Rhodes Mark I samples, velocity layer 2, used for private educational playback.
+// This sparse original Rhodes library uses nearest-sample transposition between recorded pitches.
+const WARM_RHODES_BASE="assets/instruments/warm-rhodes/";
+const WARM_RHODES_MIDI=[45,50,55,59,62,65,71,76,81,86];
+function loadWarmRhodes(ctx){
+    const key="warm-rhodes@"+ctx.sampleRate;
+    if(soundFontCache.has(key)) return soundFontCache.get(key);
+    const promise=(async()=>{
+        const decoded={};
+        await Promise.all(WARM_RHODES_MIDI.map(async midi=>{
+            const response=await fetch(WARM_RHODES_BASE+midi+".mp3");
+            if(!response.ok) throw Error("Could not load Rhodes sample: "+midi);
+            decoded[midiNoteName(midi)]=await ctx.decodeAudioData(await response.arrayBuffer());
+        }));
+        return decoded;
+    })();
+    soundFontCache.set(key,promise);
+    return promise;
+}
+
 function soundFontBufferForMidi(instrument,midi){
     const exact=midiNoteName(midi);
     if(instrument[exact]) return {buffer:instrument[exact],rate:1};
@@ -1621,7 +1641,7 @@ async function playWithSoundFonts(recording=false){
     const accompanimentProgram=SOUNDFONT_PROGRAMS[accompanimentSound] || "acoustic_grand_piano";
 
     const [melodyInstrument,accompanimentInstrument]=await Promise.all([
-        loadSoundFontInstrument(ctx,melodyProgram),
+        melodySound==="rhodes" ? loadWarmRhodes(ctx) : loadSoundFontInstrument(ctx,melodyProgram),
         accompanimentSound==="piano" ? loadIowaSteinway(ctx) : loadSoundFontInstrument(ctx,accompanimentProgram)
     ]);
 
@@ -1712,7 +1732,7 @@ async function playWithSoundFonts(recording=false){
         const barIndex=Math.max(0,Math.min(B.length-1,Math.round((start-startTime)/barDur)));
         const fixedVoicing=ACCOMP_VOICINGS[barIndex];
         const chordNotes=fixedVoicing || padIntervals(primary).map(interval=>chordRootMidi(primary)+interval);
-        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.105,accompanimentMaster));
+        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.135,accompanimentMaster));
     };
 
     // Schedule sustained notes as one attack, including cross-barline ties.
@@ -1727,12 +1747,12 @@ async function playWithSoundFonts(recording=false){
                 10:[[52,55,57,60],[54,57,60,62]], // Am7 / D7
                 21:[[51,55,58,60],[53,56,58,62]] // Cm7 / F7
             };
-            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.105,accompanimentMaster));
-            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.105,accompanimentMaster));
+            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.135,accompanimentMaster));
+            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.135,accompanimentMaster));
         }else if(i===20){
             const halfBar=barDur/2;
-            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.105,accompanimentMaster));
-            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.105,accompanimentMaster));
+            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.135,accompanimentMaster));
+            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.135,accompanimentMaster));
         }else{
             playAccompanimentChord(B[i][0],barStart,barDur);
         }
