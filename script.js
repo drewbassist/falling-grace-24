@@ -1217,6 +1217,61 @@ function renderScore(){
                 }
             }
 
+            // Display-only improvisation slashes in measures 6 and 21.
+            // Keep the underlying ABC rests intact for timing, chord placement,
+            // score spacing, playback and the four-bars-per-system layout.
+            if(group===1 || group===5){
+                const svg=system.querySelector("svg");
+                const localMeasure=group===1 ? 1 : 0;
+                if(svg){
+                    const restNodes=[...svg.querySelectorAll(
+                        `.abcjs-m${localMeasure}.abcjs-rest, .abcjs-m${localMeasure} .abcjs-rest`
+                    )];
+                    const rests=restNodes.map(el=>{
+                        try{const b=el.getBBox();return {el,x:b.x+b.width/2};}
+                        catch(e){return null;}
+                    }).filter(Boolean).sort((a,b)=>a.x-b.x);
+                    const unique=[];
+                    rests.forEach(r=>{
+                        if(!unique.length || Math.abs(r.x-unique[unique.length-1].x)>2) unique.push(r);
+                    });
+                    const staff=[...svg.querySelectorAll(".abcjs-staff")].map(el=>{
+                        try{return el.getBBox();}catch(e){return null;}
+                    }).filter(Boolean);
+                    if(staff.length && (unique.length===4 || unique.length===2)){
+                        const top=Math.min(...staff.map(b=>b.y));
+                        const bottom=Math.max(...staff.map(b=>b.y+b.height));
+                        const center=(top+bottom)/2;
+                        let xs;
+                        if(unique.length===4){
+                            xs=unique.map(r=>r.x);
+                        }else{
+                            // Two half rests represent beats 1-2 and 3-4.
+                            const halfBeat=(unique[1].x-unique[0].x)/2;
+                            xs=[unique[0].x,unique[0].x+halfBeat,
+                                unique[1].x,unique[1].x+halfBeat];
+                        }
+                        // Hide only the engraved rest glyphs, not their spacing.
+                        restNodes.forEach(el=>{el.style.visibility="hidden";});
+                        const ns="http://www.w3.org/2000/svg";
+                        const g=document.createElementNS(ns,"g");
+                        g.setAttribute("class","fg-improv-slashes");
+                        xs.forEach(x=>{
+                            const slash=document.createElementNS(ns,"line");
+                            slash.setAttribute("x1",String(x-5));
+                            slash.setAttribute("x2",String(x+5));
+                            slash.setAttribute("y1",String(center+9));
+                            slash.setAttribute("y2",String(center-9));
+                            slash.setAttribute("stroke","#171717");
+                            slash.setAttribute("stroke-width","3.3");
+                            slash.setAttribute("stroke-linecap","butt");
+                            g.appendChild(slash);
+                        });
+                        svg.appendChild(g);
+                    }
+                }
+            }
+
             // Display-only: make the major-seventh triangle a small raised glyph.
             // The underlying chord data, ABC, and playback remain unchanged.
             system.querySelectorAll("svg text").forEach(label => {
