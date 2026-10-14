@@ -340,3 +340,61 @@ h1{font-size:48px;margin-bottom:8px}
 #transport .fg-composition .fg-style-buttons{min-height:40px !important;}
 #transport .fg-composition .fg-hat-option{font-size:14px !important;}
 #transport .fg-account .fg-export-actions{margin-top:auto !important;}
+
+/* Unified control-panel layout. Overrides legacy presentation rules only. */
+@media (min-width:1051px){
+  #transport .fg-three-columns{
+    grid-template-columns:minmax(0,31fr) minmax(0,40fr) minmax(0,29fr) !important;
+    column-gap:22px !important;
+    align-items:stretch !important;
+  }
+  #transport .fg-column{min-height:250px !important;gap:16px !important;}
+  #transport .fg-column + .fg-column{padding-left:22px !important;}
+  #transport .fg-composition .fg-style-buttons,
+  #transport .fg-generation .fg-generation-actions,
+  #transport .fg-account .fg-export-actions{
+    margin-top:auto !important;margin-bottom:0 !important;
+    flex-wrap:nowrap !important;align-items:center !important;
+    align-self:stretch !important;min-height:40px !important;
+  }
+  #transport .fg-generation .fg-generation-actions{gap:7px !important;}
+  #transport .fg-generation .fg-generation-actions button{flex:0 0 auto !important;}
+  #transport .fg-composition .fg-style-buttons{gap:8px !important;}
+  #transport .fg-composition .fg-hat-option{margin-left:4px !important;}
+}
+#transport .fg-style-buttons button,
+#transport .fg-generation-actions button,
+#transport .fg-export-actions button,
+#transport .fg-transport-row button,
+#transport #fg-favorites button{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:13px !important;font-weight:500 !important;
+  text-transform:none !important;letter-spacing:0 !important;
+  height:40px !important;min-height:40px !important;
+  padding:0 12px !important;border-radius:7px !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.035) !important;
+}
+#transport .fg-generation-actions #generate{font-weight:500 !important;}
+#transport .fg-style-buttons button[aria-pressed="true"]{font-weight:500 !important;}
+#transport .fg-generation .fg-practice-options{justify-content:flex-start !important;flex-wrap:nowrap !important;}
+#transport .fg-generation .fg-practice-options select{
+  flex:0 1 auto !important;width:235px !important;max-width:235px !important;
+  min-width:0 !important;height:38px !important;
+}
+#transport .fg-account #fg-favorites{grid-template-columns:minmax(0,1fr) auto !important;}
+#transport .fg-account #fg-load{width:235px !important;max-width:100% !important;justify-self:start !important;}
+#transport .fg-account .fg-export-actions{gap:9px !important;}
+#transport .fg-account .fg-export-actions button{flex:none !important;}
+#transport #fg-range select{width:68px !important;}
+#transport .fg-composition .fg-hat-option{font-family:Inter,system-ui,sans-serif !important;font-size:13px !important;font-weight:400 !important;}
+#transport .fg-generation .fg-volume-control{max-width:330px !important;}
+@media (min-width:1051px) and (max-width:1450px){
+  #transport .fg-three-columns{grid-template-columns:minmax(0,30fr) minmax(0,43fr) minmax(0,27fr) !important;column-gap:14px !important;}
+  #transport .fg-column + .fg-column{padding-left:14px !important;}
+  #transport .fg-generation-actions button{padding:0 8px !important;font-size:11px !important;}
+  #transport .fg-composition .fg-style-buttons button{padding:0 9px !important;font-size:12px !important;}
+}
+@media (max-width:1050px){
+  #transport .fg-generation-actions{flex-wrap:wrap !important;}
+  #transport .fg-composition .fg-style-buttons{flex-wrap:wrap !important;}
+}
