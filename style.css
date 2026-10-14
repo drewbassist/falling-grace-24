@@ -277,3 +277,10 @@ h1{font-size:48px;margin-bottom:8px}
  #score .score-system{break-inside:avoid;page-break-inside:avoid;margin:0 auto!important;width:95%!important;max-width:95%!important;overflow:visible!important}
  #score .score-system svg{max-width:100%!important}
 }
+
+/* Practice panel alignment: left / middle / right columns. */
+#transport .fg-composition .fg-style-buttons{display:flex !important;align-items:center;gap:9px !important;flex-wrap:wrap !important;}
+#transport .fg-composition .fg-hat-option{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font:13px Arial,sans-serif;cursor:pointer;margin-left:4px;}
+#transport .fg-generation .fg-practice-options{display:flex;justify-content:flex-start;align-items:center;flex-wrap:wrap;gap:8px;margin:0 !important;min-height:38px;font:13px Arial,sans-serif;}
+#transport .fg-generation .fg-practice-options select{height:38px;max-width:260px;min-width:0;flex:1 1 160px;}
+#transport .fg-generation{justify-content:flex-start;}

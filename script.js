@@ -2351,6 +2351,8 @@ function arrangeCompactControls(styleButtons){
     const right=document.createElement("div"); right.className="fg-column fg-account";
     // Reparent original interactive elements, preserving listeners and IDs.
     left.append(tempo,range,styleButtons);
+    const practice=document.querySelector(".fg-practice-options");
+    if(practice) middle.appendChild(practice);
     ["#melodyVolume-wrap", "#accompanimentVolume-wrap"].forEach(selector=>{
         const control=document.querySelector(selector);
         if(control) middle.appendChild(control);
@@ -2388,8 +2390,11 @@ function setupFgPracticeControls(){
     hat.checked=fgHiHatEnabled;
     hat.addEventListener("change",()=>{fgHiHatEnabled=hat.checked;stopPlayback();});
     hatLabel.append(hat,document.createTextNode(" Hi-hat 2 & 4"));
-    practice.append(modeLabel,mode,hatLabel);
+    practice.append(modeLabel,mode);
     row.parentElement.insertBefore(practice,row);
+    // Position the hi-hat immediately after the contour buttons.
+    const contour=document.querySelector(".fg-style-buttons");
+    if(contour) contour.appendChild(hatLabel);
     const pdf=document.createElement("button");pdf.type="button";pdf.id="downloadPdf";
     pdf.className="fg-modern-button";pdf.textContent="↓ PDF";
     pdf.title="Print score or save as PDF";
