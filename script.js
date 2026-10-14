@@ -1272,6 +1272,38 @@ function renderScore(){
                 }
             }
 
+            // Display-only incoming half of a cross-system tie. Each system
+            // is rendered separately, so ABCJS cannot draw the continuation
+            // before the first note of the next system. Never add a slur:
+            // boundaryTied checks the exact MIDI pitches and rhythm markers.
+            if(group>0 && boundaryTied(first-1)){
+                const tieSvg=system.querySelector("svg");
+                const firstNote=tieSvg && tieSvg.querySelector(
+                    ".abcjs-m0.abcjs-note, .abcjs-m0 .abcjs-note"
+                );
+                if(firstNote){
+                    const head=firstNote.querySelector(".abcjs-notehead") || firstNote;
+                    try{
+                        const b=head.getBBox();
+                        const matrix=head.getCTM();
+                        const point=tieSvg.createSVGPoint();
+                        point.x=b.x+b.width/2;
+                        point.y=b.y+b.height/2;
+                        const pos=matrix ? point.matrixTransform(matrix) : point;
+                        const x=pos.x-5;
+                        const y=pos.y+6;
+                        const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+                        path.setAttribute("d",`M ${x-14} ${y-1} Q ${x-7} ${y+5} ${x} ${y-1}`);
+                        path.setAttribute("fill","none");
+                        path.setAttribute("stroke","#171717");
+                        path.setAttribute("stroke-width","1.4");
+                        path.setAttribute("stroke-linecap","round");
+                        path.setAttribute("class","fg-incoming-system-tie");
+                        tieSvg.appendChild(path);
+                    }catch(e){ /* Keep the score intact if SVG geometry is unavailable. */ }
+                }
+            }
+
             // Display-only: make the major-seventh triangle a small raised glyph.
             // The underlying chord data, ABC, and playback remain unchanged.
             system.querySelectorAll("svg text").forEach(label => {
