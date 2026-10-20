@@ -2064,7 +2064,12 @@ async function playWithSoundFonts(recording=false){
     if(fgOriginalMode){
         for(let pass=0;pass<1;pass++) for(let i=0;i<26;i++){
             const barStart=startTime+(pass*26+i)*barDur;
-            if(i>=24) playAccompanimentChord(i===24?"AbM7":"DbM7",barStart,barDur);
+            if(i>=24){
+                // The original melody has a 26-bar form. Do not wrap coda
+                // accompaniment back to the fixed 24-bar voicing array.
+                const codaVoicing=i===24?[56,60,63,67]:[61,65,68,72];
+                codaVoicing.forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur,0.19,accompanimentMaster));
+            }
             else if([4,5,10,21].includes(i)){
                 const pairs={4:[[53,56,60,63],[53,56,62,70]],5:[[55,58,63,67],[54,60,62,69]],10:[[52,55,57,60],[54,57,60,62]],21:[[51,55,58,60],[53,56,58,62]]};
                 pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.19,accompanimentMaster));
@@ -2941,22 +2946,10 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:0 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round(((parent.clientWidth||1200)*0.8-72)/2)):Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
-    if(svg && first===24){
-        // Keep the coda's two measures at half-system width while its clef
-        // starts at the same horizontal position as the preceding systems.
-        svg.style.setProperty('width','50%','important');
-        svg.style.setProperty('max-width','50%','important');
-        svg.style.marginLeft='0';
-        const codaLabel=document.createElement('div');
-        codaLabel.textContent='Coda';
-        codaLabel.className='fg-coda-label';
-        codaLabel.style.cssText='position:absolute;left:24px;top:-22px;font:italic 600 16px Georgia,serif;color:#171717;pointer-events:none;';
-        sys.appendChild(codaLabel);
-    }
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
         let x=60,y=120;
