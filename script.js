@@ -2062,7 +2062,6 @@ async function playWithSoundFonts(recording=false){
     }
 
     if(fgOriginalMode){
-        const originalEvents=[];
         for(let pass=0;pass<2;pass++) for(let i=0;i<26;i++){
             const barStart=startTime+(pass*26+i)*barDur;
             if(i>=24) playAccompanimentChord(i===24?"AbM7":"DbM7",barStart,barDur);
@@ -2075,10 +2074,13 @@ async function playWithSoundFonts(recording=false){
                 [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.19,accompanimentMaster));
             }else playAccompanimentChord(B[i][0],barStart,barDur);
             if(fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1))continue;
-            for(const ev of FG_ORIGINAL[i]) if(ev.m!==null && ev.d>0)
-                originalEvents.push({m:ev.m,start:barStart+ev.t/12*beat,dur:ev.d/12*beat});
         }
-        for(const ev of originalEvents) playMelodyVoice(ev.m,ev.start,ev.dur,0.05);
+        // Each tied chain gets exactly one attack, including across barlines.
+        // Repeat the phrase twice without tying across the repeat boundary.
+        for(let pass=0;pass<2;pass++) for(const ev of fgOriginalSustainedEvents()){
+            const when=startTime+(pass*26*48+ev.start)/12*beat;
+            playMelodyVoice(ev.m,when,ev.d/12*beat,0.05);
+        }
         const totalMs=(52*barDur+0.2)*1000;
         if(recording && wavCapture){
             const capture=wavCapture;
@@ -2971,6 +2973,21 @@ function fgShowOriginal(){
 function fgMidiVar(n){let a=[n&127];while((n>>=7)>0)a.unshift((n&127)|128);return a;}
 function fgMidiChunk(type,bytes){return [...type].map(c=>c.charCodeAt(0)).concat([(bytes.length>>>24)&255,(bytes.length>>>16)&255,(bytes.length>>>8)&255,bytes.length&255],bytes);}
 function fgMidiTrack(events){events.sort((a,b)=>a.t-b.t||a.order-b.order);let out=[],last=0;for(const e of events){out.push(...fgMidiVar(Math.max(0,e.t-last)),...e.data);last=e.t;}out.push(0,255,47,0);return fgMidiChunk('MTrk',out);}
+// Combine MusicXML tie continuations into one note-on event. The source
+// keeps individual noteheads for engraving; playback must not reattack them.
+function fgOriginalSustainedEvents(){
+    const events=[];
+    for(let i=0;i<FG_ORIGINAL.length;i++) for(const note of FG_ORIGINAL[i]){
+        if(note.m===null || note.d<=0)continue;
+        const start=i*48+note.t;
+        const prev=events[events.length-1];
+        if(prev && prev.tie && prev.m===note.m && prev.start+prev.d===start){
+            prev.d+=note.d;
+            prev.tie=!!note.tie;
+        }else events.push({m:note.m,start,d:note.d,tie:!!note.tie});
+    }
+    return events;
+}
 function fgDownloadMidi(){
     const ppq=480,barTicks=ppq*4,bpm=getTempo();const melody=[{t:0,order:0,data:[0xC0,4]}],accomp=[{t:0,order:0,data:[0xC1,0]}];
     const tempo=Math.round(60000000/bpm);const meta=[{t:0,order:0,data:[255,81,3,(tempo>>16)&255,(tempo>>8)&255,tempo&255]}];
@@ -2978,7 +2995,7 @@ function fgDownloadMidi(){
     const count=26;
     for(let i=0;i<count;i++){
         const base=i*barTicks;
-        if(fgOriginalMode){for(const ev of FG_ORIGINAL[i])add(melody,0,ev.m,base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
+        if(fgOriginalMode){/* Original melody is added as merged tie chains below. */}
         else if(i<24 && i!==5 && i!==20){let pos=0;eventDurations(i).forEach((units,j)=>{add(melody,0,notes[i][j]?.m,base+pos*ppq/2,units*ppq/2,88);pos+=units;});}
         else if(i>=24){for(const ev of FG_ORIGINAL[i])add(melody,0,ev.m,base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
         // Preserve accompaniment harmonic changes, including two-chord bars.
@@ -2986,6 +3003,8 @@ function fgDownloadMidi(){
         if(pairs[i])pairs[i].forEach((voicing,h)=>voicing.forEach(m=>add(accomp,1,m,base+h*barTicks/2,barTicks/2,68)));
         else {const voicings={24:[56,60,63,67],25:[61,65,68,72]};const chord=i<24?B[i][0]:'';const match=chord.match(/^([A-G])([b#]?)/);const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11};const root=match?(semis[match[1]]+(match[2]==='b'?-1:match[2]==='#'?1:0)+120)%12:null;const minor=/m7|mM7|m7b5/.test(chord);const diminished=/dim|°|m7b5/.test(chord);const seventh=/7/.test(chord);const v=voicings[i]||(root===null?[]:[48+root,48+root+(minor||diminished?3:4),48+root+(diminished?6:7),48+root+(seventh?minor||/^[A-G][b#]?7/.test(chord)?10:11:11)]);v.forEach(m=>add(accomp,1,m,base,barTicks,68));}
     }
+    if(fgOriginalMode)for(const ev of fgOriginalSustainedEvents())
+        add(melody,0,ev.m,Math.round(ev.start/12*ppq),Math.round(ev.d/12*ppq),88);
     const header=fgMidiChunk('MThd',[0,1,0,3,1,224]);const bytes=new Uint8Array([...header,...fgMidiTrack(meta),...fgMidiTrack(melody),...fgMidiTrack(accomp)]);
     const url=URL.createObjectURL(new Blob([bytes],{type:'audio/midi'}));const a=document.createElement('a');a.href=url;a.download='Falling-Grace-'+(fgOriginalMode?'Original':'Generated')+'.mid';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
