@@ -2914,7 +2914,7 @@ function fgAbcBars(first,last){
         for(let j=0;j<events.length;j++){
             const ev=events[j];
             // MusicXML timing uses twelve ticks per quarter; ABC's base is an eighth.
-            const duration=ev.d===6?'':ev.d===12?'2':ev.d===24?'4':ev.d===36?'6':ev.d===48?'8':ev.d===18?'3':ev.d===3?'/2':ev.d===8?'4/3':ev.d===4?'2/3':ev.d===2?'/3':String(ev.d)+'/6';
+            const duration=ev.d===6?'':ev.d===12?'2':ev.d===24?'4':ev.d===36?'6':ev.d===48?'8':ev.d===18?'3':ev.d===3?'/2':ev.d===8?'2':ev.d===4?'2/3':ev.d===2?'/3':String(ev.d)+'/6';
             const previous=j>0?events[j-1]:null;
             const next=j+1<events.length?events[j+1]:null;
             const prevBar=first+i>0?FG_ORIGINAL[first+i-1].at(-1):null;
