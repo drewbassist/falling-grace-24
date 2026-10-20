@@ -2941,10 +2941,22 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:0 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round(((parent.clientWidth||1200)*0.8-72)/2)):Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
+    if(svg && first===24){
+        // Keep the coda's two measures at half-system width while its clef
+        // starts at the same horizontal position as the preceding systems.
+        svg.style.setProperty('width','50%','important');
+        svg.style.setProperty('max-width','50%','important');
+        svg.style.marginLeft='0';
+        const codaLabel=document.createElement('div');
+        codaLabel.textContent='Coda';
+        codaLabel.className='fg-coda-label';
+        codaLabel.style.cssText='position:absolute;left:24px;top:-22px;font:italic 600 16px Georgia,serif;color:#171717;pointer-events:none;';
+        sys.appendChild(codaLabel);
+    }
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
         let x=60,y=120;
