@@ -2045,7 +2045,7 @@ async function playWithSoundFonts(recording=false){
         const noise=ctx.createBuffer(1,hatLength,sampleRate);
         const channel=noise.getChannelData(0);
         for(let n=0;n<hatLength;n++) channel[n]=(Math.random()*2-1)*Math.exp(-n/(sampleRate*0.012));
-        for(let bar=0;bar<B.length*2;bar++) for(const hit of [1,3]){
+        for(let bar=0;bar<(fgOriginalMode?26:B.length*2);bar++) for(const hit of [1,3]){
             const when=startTime+(bar*4+hit)*beat;
             const source=ctx.createBufferSource();
             const highpass=ctx.createBiquadFilter();
@@ -2062,7 +2062,7 @@ async function playWithSoundFonts(recording=false){
     }
 
     if(fgOriginalMode){
-        for(let pass=0;pass<2;pass++) for(let i=0;i<26;i++){
+        for(let pass=0;pass<1;pass++) for(let i=0;i<26;i++){
             const barStart=startTime+(pass*26+i)*barDur;
             if(i>=24) playAccompanimentChord(i===24?"AbM7":"DbM7",barStart,barDur);
             else if([4,5,10,21].includes(i)){
@@ -2076,12 +2076,12 @@ async function playWithSoundFonts(recording=false){
             if(fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1))continue;
         }
         // Each tied chain gets exactly one attack, including across barlines.
-        // Repeat the phrase twice without tying across the repeat boundary.
-        for(let pass=0;pass<2;pass++) for(const ev of fgOriginalSustainedEvents()){
+        // Play the original 26-bar score once, including the coda, then stop.
+        for(let pass=0;pass<1;pass++) for(const ev of fgOriginalSustainedEvents()){
             const when=startTime+(pass*26*48+ev.start)/12*beat;
             playMelodyVoice(ev.m,when,ev.d/12*beat,0.05);
         }
-        const totalMs=(52*barDur+0.2)*1000;
+        const totalMs=(26*barDur+0.2)*1000;
         if(recording && wavCapture){
             const capture=wavCapture;
             setTimeout(()=>{if(capture.recorder.state!=="inactive")capture.recorder.stop();},totalMs);
