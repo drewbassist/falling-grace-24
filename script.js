@@ -2901,9 +2901,9 @@ function boot(){
 
 boot();
 
-function fgAbcNote(ev){
+function fgAbcNote(ev, suppressAccidental=false){
     if(ev.m===null)return 'z';
-    const step=ev.step;let acc=ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
+    const step=ev.step;let acc=suppressAccidental?'':ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
     const oct=ev.oct;
     return acc+(oct>=5?step.toLowerCase():step.toUpperCase())+(oct>5?"'".repeat(oct-5):oct<4?",".repeat(4-oct):'');
 }
@@ -2928,17 +2928,20 @@ function fgAbcBars(first,last){
             const sameBeat=prior && Math.floor(prior.t/12)===Math.floor(ev.t/12);
             const tripletContinuation=prior && prior.d===8 && ev.d===8 &&
                 Math.floor(prior.t/24)===Math.floor(ev.t/24);
-            const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation);
-            const token=(triplet?'(3':'')+fgAbcNote(ev)+duration+(tied?'-':'');
+            const sixteenthPair=prior && prior.d===3 && ev.d===3 && Math.floor(prior.t/12)===Math.floor(ev.t/12);
+            const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
+            // Measure 2 repeats the tied A-flat from measure 1; no new flat is needed.
+            const omitFlat=first+i===1 && j===0 && ev.step==='A' && ev.alt===-1;
+            const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
             notes.push((beam?'':' ')+token);
         }
         return `"${chords}" ${notes.join('')} |`;
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:0 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
-    ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
+    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round(((parent.clientWidth||1200)*0.8-72)/2)):Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
