@@ -1,3 +1,7 @@
+
+// Original MusicXML transcription, durations in 1/12 quarter-note units.
+const FG_ORIGINAL=[[{"m":75,"t":0,"d":48,"tie":true,"step":"E","alt":-1,"oct":5}],[{"m":75,"t":0,"d":24,"tie":true,"step":"E","alt":-1,"oct":5},{"m":75,"t":24,"d":8,"tie":true,"step":"E","alt":-1,"oct":5},{"m":74,"t":32,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":12,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":18,"d":6,"tie":true,"step":"B","alt":-1,"oct":4},{"m":70,"t":24,"d":18,"tie":true,"step":"B","alt":-1,"oct":4},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":18,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":74,"t":24,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":42,"d":6,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":67,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":4},{"m":67,"t":24,"d":12,"tie":true,"step":"G","alt":0,"oct":4},{"m":74,"t":36,"d":6,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":24,"tie":true,"step":"G","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":77,"t":24,"d":8,"tie":false,"step":"F","alt":0,"oct":5},{"m":76,"t":32,"d":8,"tie":false,"step":"E","alt":0,"oct":5},{"m":74,"t":40,"d":8,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":72,"t":0,"d":36,"tie":true,"step":"C","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":true,"step":"C","alt":0,"oct":5},{"m":71,"t":42,"d":3,"tie":false,"step":"B","alt":0,"oct":4},{"m":72,"t":45,"d":3,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":71,"t":0,"d":12,"tie":false,"step":"B","alt":0,"oct":4},{"m":71,"t":12,"d":6,"tie":false,"step":"B","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":78,"t":30,"d":12,"tie":false,"step":"F","alt":1,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":48,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":12,"tie":true,"step":"B","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":76,"t":18,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":76,"t":24,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":74,"t":30,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":36,"tie":true,"step":"B","alt":0,"oct":4},{"m":72,"t":36,"d":12,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":48,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":69,"t":12,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":72,"t":24,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":69,"t":40,"d":8,"tie":false,"step":"A","alt":0,"oct":4}],[{"m":72,"t":0,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":24,"tie":true,"step":"F","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":75,"t":12,"d":12,"tie":false,"step":"E","alt":-1,"oct":5},{"m":74,"t":24,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":32,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":76,"t":30,"d":12,"tie":false,"step":"E","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":74,"t":18,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":30,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":24,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":24,"d":8,"tie":true,"step":"A","alt":0,"oct":4},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":24,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":8,"tie":true,"step":"D","alt":0,"oct":5},{"m":75,"t":32,"d":8,"tie":false,"step":"E","alt":-1,"oct":5},{"m":77,"t":40,"d":8,"tie":false,"step":"F","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":8,"tie":true,"step":"G","alt":0,"oct":5},{"m":80,"t":32,"d":8,"tie":false,"step":"A","alt":-1,"oct":5},{"m":82,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":5}],[{"m":84,"t":0,"d":48,"tie":false,"step":"C","alt":0,"oct":6}]];
+let fgOriginalMode=false;
 const R=[
 ["Rhythm 1","Q · EE · EE · Q"],
 ["Rhythm 2","Q · EE · E · Q · E"],
@@ -673,9 +677,11 @@ function render(){
         }
     });
     renderScore();
+    if(!fgOriginalMode) fgAppendCoda();
 }
 
 function generateAll(){
+    fgOriginalMode=false;
     if(melodicStyle==="smooth") contourDirections=Array.from({length:3},()=>Math.random()<.5?1:-1);
 
     ro=shuffleRhythmsWithTies();
@@ -1064,6 +1070,7 @@ function buildABC(){
    ============================================================ */
 
 function renderScore(){
+    if(fgOriginalMode){renderFgOriginalScore();return;}
     clearScoreFollower();
 
     const container=document.querySelector("#score");
@@ -2054,6 +2061,32 @@ async function playWithSoundFonts(recording=false){
         }
     }
 
+    if(fgOriginalMode){
+        const originalEvents=[];
+        for(let pass=0;pass<2;pass++) for(let i=0;i<26;i++){
+            const barStart=startTime+(pass*26+i)*barDur;
+            if(i>=24) playAccompanimentChord(i===24?"AbM7":"DbM7",barStart,barDur);
+            else if([4,5,10,21].includes(i)){
+                const pairs={4:[[53,56,60,63],[53,56,62,70]],5:[[55,58,63,67],[54,60,62,69]],10:[[52,55,57,60],[54,57,60,62]],21:[[51,55,58,60],[53,56,58,62]]};
+                pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.19,accompanimentMaster));
+                pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.19,accompanimentMaster));
+            }else if(i===20){
+                [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.19,accompanimentMaster));
+                [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.19,accompanimentMaster));
+            }else playAccompanimentChord(B[i][0],barStart,barDur);
+            if(fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1))continue;
+            for(const ev of FG_ORIGINAL[i]) if(ev.m!==null && ev.d>0)
+                originalEvents.push({m:ev.m,start:barStart+ev.t/12*beat,dur:ev.d/12*beat});
+        }
+        for(const ev of originalEvents) playMelodyVoice(ev.m,ev.start,ev.dur,0.05);
+        const totalMs=(52*barDur+0.2)*1000;
+        if(recording && wavCapture){
+            const capture=wavCapture;
+            setTimeout(()=>{if(capture.recorder.state!=="inactive")capture.recorder.stop();},totalMs);
+        }
+        audioSynth.timeoutIds.push(setTimeout(()=>{if(!audioSynth.stopped)stopPlayback();},totalMs));
+        return;
+    }
     // Schedule sustained notes as one attack, including cross-barline ties.
     const melodyEvents=[];
     for(let pass=0;pass<2;pass++) for(let i=0;i<B.length;i++){
@@ -2601,6 +2634,7 @@ async function initApp(){
     modernizeControls();
     setupFgPracticeControls();
     setupMelodyRange();
+    fgInstallExtraButtons();
 
 /* ============================================================
    EVENT HANDLERS
@@ -2858,3 +2892,66 @@ function boot(){
 }
 
 boot();
+
+function fgAbcNote(ev){
+    if(ev.m===null)return 'z';
+    const step=ev.step;let acc=ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
+    const oct=ev.oct;
+    return acc+(oct>=5?step.toLowerCase():step.toUpperCase())+(oct>5?"'".repeat(oct-5):oct<4?",".repeat(4-oct):'');
+}
+function fgAbcBars(first,last){
+    return FG_ORIGINAL.slice(first,last).map((events,i)=>{
+        const chords=first+i===24?'Ab△7':first+i===25?'Db△7':(B[first+i]?.[0]||'').replace(/M7/g,'△7');
+        const notes=events.map(ev=>fgAbcNote(ev)+(ev.d===12?'2':ev.d===24?'4':ev.d===36?'6':ev.d===48?'8':ev.d===6?'':ev.d===8?'4/3':ev.d===16?'8/3':ev.d===18?'3':ev.d===4?'2/3':ev.d===3?'/2':ev.d===2?'/3':ev.d===1?'/6':String(ev.d)+'/6')).join(' ');
+        return `"${chords}" ${notes} |`;
+    }).join(' ');
+}
+function fgDrawScoreSystem(parent,first,last){
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:hidden;';parent.appendChild(sys);
+    const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
+    ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
+}
+function renderFgOriginalScore(){
+    clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
+    target.replaceChildren();const wrap=document.createElement('div');wrap.className='score-systems';target.appendChild(wrap);
+    for(let i=0;i<26;i+=4)fgDrawScoreSystem(wrap,i,Math.min(i+4,26));
+}
+function fgAppendCoda(){
+    const wrap=document.querySelector('#score .score-systems');if(wrap&&window.ABCJS)fgDrawScoreSystem(wrap,24,26);
+}
+function fgShowOriginal(){
+    stopPlayback();fgOriginalMode=true;renderFgOriginalScore();
+    const out=document.querySelector('#output');if(out){out.replaceChildren();FG_ORIGINAL.forEach((events,i)=>{
+        const tr=document.createElement('tr');const chord=i===24?'Ab△7':i===25?'Db△7':B[i][0];
+        [i+1,chord,'Original melody','MusicXML transcription','Original',events.filter(e=>e.m!==null).map(e=>e.step+(e.alt===-1?'b':e.alt===1?'#':'')+e.oct).join(' · ')].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});out.appendChild(tr);
+    });}
+}
+function fgMidiVar(n){let a=[n&127];while((n>>=7)>0)a.unshift((n&127)|128);return a;}
+function fgMidiChunk(type,bytes){return [...type].map(c=>c.charCodeAt(0)).concat([(bytes.length>>>24)&255,(bytes.length>>>16)&255,(bytes.length>>>8)&255,bytes.length&255],bytes);}
+function fgMidiTrack(events){events.sort((a,b)=>a.t-b.t||a.order-b.order);let out=[],last=0;for(const e of events){out.push(...fgMidiVar(Math.max(0,e.t-last)),...e.data);last=e.t;}out.push(0,255,47,0);return fgMidiChunk('MTrk',out);}
+function fgDownloadMidi(){
+    const ppq=480,barTicks=ppq*4,bpm=getTempo();const melody=[{t:0,order:0,data:[0xC0,4]}],accomp=[{t:0,order:0,data:[0xC1,0]}];
+    const tempo=Math.round(60000000/bpm);const meta=[{t:0,order:0,data:[255,81,3,(tempo>>16)&255,(tempo>>8)&255,tempo&255]}];
+    const add=(arr,ch,m,t,d,vel)=>{if(m==null||!Number.isFinite(m)||d<=0)return;arr.push({t,order:1,data:[0x90+ch,m,vel]},{t:t+d,order:0,data:[0x80+ch,m,0]});};
+    const count=26;
+    for(let i=0;i<count;i++){
+        const base=i*barTicks;
+        if(fgOriginalMode){for(const ev of FG_ORIGINAL[i])add(melody,0,ev.m,base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
+        else if(i<24 && i!==5 && i!==20){let pos=0;eventDurations(i).forEach((units,j)=>{add(melody,0,notes[i][j]?.m,base+pos*ppq/2,units*ppq/2,88);pos+=units;});}
+        else if(i>=24){for(const ev of FG_ORIGINAL[i])add(melody,0,ev.m,base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
+        // Preserve accompaniment harmonic changes, including two-chord bars.
+        const pairs={4:[[53,56,60,63],[53,56,62,70]],5:[[55,58,63,67],[54,60,62,69]],10:[[52,55,57,60],[54,57,60,62]],20:[[53,57,60,62],[53,56,59,61]],21:[[51,55,58,60],[53,56,58,62]]};
+        if(pairs[i])pairs[i].forEach((voicing,h)=>voicing.forEach(m=>add(accomp,1,m,base+h*barTicks/2,barTicks/2,68)));
+        else {const voicings={24:[56,60,63,67],25:[61,65,68,72]};const chord=i<24?B[i][0]:'';const match=chord.match(/^([A-G])([b#]?)/);const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11};const root=match?(semis[match[1]]+(match[2]==='b'?-1:match[2]==='#'?1:0)+120)%12:null;const minor=/m7|mM7|m7b5/.test(chord);const diminished=/dim|°|m7b5/.test(chord);const seventh=/7/.test(chord);const v=voicings[i]||(root===null?[]:[48+root,48+root+(minor||diminished?3:4),48+root+(diminished?6:7),48+root+(seventh?minor||/^[A-G][b#]?7/.test(chord)?10:11:11)]);v.forEach(m=>add(accomp,1,m,base,barTicks,68));}
+    }
+    const header=fgMidiChunk('MThd',[0,1,0,3,1,224]);const bytes=new Uint8Array([...header,...fgMidiTrack(meta),...fgMidiTrack(melody),...fgMidiTrack(accomp)]);
+    const url=URL.createObjectURL(new Blob([bytes],{type:'audio/midi'}));const a=document.createElement('a');a.href=url;a.download='Falling-Grace-'+(fgOriginalMode?'Original':'Generated')+'.mid';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function fgInstallExtraButtons(){
+    const generate=document.querySelector('#generate');if(generate&&!document.querySelector('#fg-original')){
+        const b=document.createElement('button');b.id='fg-original';b.type='button';b.className=generate.className;b.textContent='Original Melody';b.addEventListener('click',fgShowOriginal);generate.insertAdjacentElement('afterend',b);
+    }
+    const pdf=document.querySelector('#downloadPdf');if(pdf&&!document.querySelector('#fg-midi')){
+        const b=document.createElement('button');b.id='fg-midi';b.type='button';b.className=pdf.className;b.textContent='↓ Download MIDI';b.addEventListener('click',fgDownloadMidi);pdf.insertAdjacentElement('afterend',b);
+    }
+}
