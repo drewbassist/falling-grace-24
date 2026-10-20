@@ -2948,10 +2948,18 @@ function fgDownloadMidi(){
     const url=URL.createObjectURL(new Blob([bytes],{type:'audio/midi'}));const a=document.createElement('a');a.href=url;a.download='Falling-Grace-'+(fgOriginalMode?'Original':'Generated')+'.mid';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
 function fgInstallExtraButtons(){
-    const generate=document.querySelector('#generate');if(generate&&!document.querySelector('#fg-original')){
-        const b=document.createElement('button');b.id='fg-original';b.type='button';b.className=generate.className;b.textContent='Original Melody';b.addEventListener('click',fgShowOriginal);generate.insertAdjacentElement('afterend',b);
+    const generate=document.querySelector('#generate');
+    if(generate&&!document.querySelector('#fg-original')){
+        const b=document.createElement('button');
+        b.id='fg-original';b.type='button';b.textContent='Original Melody';
+        b.addEventListener('click',fgShowOriginal);
+        generate.parentElement.insertBefore(b,generate);
     }
-    const pdf=document.querySelector('#downloadPdf');if(pdf&&!document.querySelector('#fg-midi')){
-        const b=document.createElement('button');b.id='fg-midi';b.type='button';b.className=pdf.className;b.textContent='↓ Download MIDI';b.addEventListener('click',fgDownloadMidi);pdf.insertAdjacentElement('afterend',b);
+    const pdf=document.querySelector('#downloadPdf');
+    if(pdf&&!document.querySelector('#fg-midi')){
+        const b=document.createElement('button');
+        b.id='fg-midi';b.type='button';b.textContent='↓ Download MIDI';
+        b.addEventListener('click',fgDownloadMidi);
+        pdf.insertAdjacentElement('afterend',b);
     }
 }
