@@ -2578,6 +2578,9 @@ function arrangeCompactControls(styleButtons){
         if(button) actions.appendChild(button);
     });
     middle.appendChild(actions);
+    // Original Melody belongs before Generate in the middle column.
+    const originalButton=document.getElementById("fg-original");
+    if(originalButton) actions.insertBefore(originalButton,actions.firstChild);
     right.appendChild(favorites);
     // Display the account identity below the favorites controls.
     const authStatus=document.getElementById("fg-auth-status");
@@ -2585,7 +2588,7 @@ function arrangeCompactControls(styleButtons){
     // Export controls belong below Load Favorite in the account column.
     const exports=document.createElement("div");
     exports.className="fg-export-actions";
-    for(const id of ["downloadWav","downloadPdf"]){
+    for(const id of ["downloadWav","downloadPdf","fg-midi"]){
         const button=document.getElementById(id);
         if(button) exports.appendChild(button);
     }
@@ -2593,6 +2596,11 @@ function arrangeCompactControls(styleButtons){
     columns.append(left,middle,right);
     transport.insertBefore(columns,originalRow);
     originalRow.classList.add("fg-transport-row");
+    // Keep the bottom row exclusively for Play / Stop / Ready.
+    const original=document.getElementById("fg-original");
+    if(original) actions.insertBefore(original,actions.firstChild);
+    const midi=document.getElementById("fg-midi");
+    if(midi) exports.appendChild(midi);
 }
 
 function setupFgPracticeControls(){
