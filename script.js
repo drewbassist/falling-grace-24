@@ -2910,14 +2910,37 @@ function fgAbcNote(ev){
 function fgAbcBars(first,last){
     return FG_ORIGINAL.slice(first,last).map((events,i)=>{
         const chords=first+i===24?'Ab△7':first+i===25?'Db△7':(B[first+i]?.[0]||'').replace(/M7/g,'△7');
-        const notes=events.map(ev=>fgAbcNote(ev)+(ev.d===12?'2':ev.d===24?'4':ev.d===36?'6':ev.d===48?'8':ev.d===6?'':ev.d===8?'4/3':ev.d===16?'8/3':ev.d===18?'3':ev.d===4?'2/3':ev.d===3?'/2':ev.d===2?'/3':ev.d===1?'/6':String(ev.d)+'/6')).join(' ');
-        return `"${chords}" ${notes} |`;
+        let notes=[];
+        for(let j=0;j<events.length;j++){
+            const ev=events[j];
+            // MusicXML timing uses twelve ticks per quarter; ABC's base is an eighth.
+            const duration=ev.d===6?'':ev.d===12?'2':ev.d===24?'4':ev.d===36?'6':ev.d===48?'8':ev.d===18?'3':ev.d===3?'/2':ev.d===8?'4/3':ev.d===4?'2/3':ev.d===2?'/3':String(ev.d)+'/6';
+            const previous=j>0?events[j-1]:null;
+            const next=j+1<events.length?events[j+1]:null;
+            const prevBar=first+i>0?FG_ORIGINAL[first+i-1].at(-1):null;
+            const nextBar=first+i+1<FG_ORIGINAL.length?FG_ORIGINAL[first+i+1][0]:null;
+            // The imported tie flag denotes an outgoing tie. Only join equal pitches.
+            const tied=ev.tie && ev.m!==null && ((next&&next.m===ev.m)||( !next&&nextBar&&nextBar.m===ev.m));
+            const triplet=ev.d===8 && (j===0 || events[j-1].d!==8) && j+2<events.length && events[j+1].d===8 && events[j+2].d===8;
+            notes.push((triplet?'(3':'')+fgAbcNote(ev)+duration+(tied?'-':''));
+        }
+        return `"${chords}" ${notes.join(' ')} |`;
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:hidden;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:hidden;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
+    const svg=sys.querySelector('svg');
+    if(svg){
+        const time=svg.querySelector('.abcjs-time-signature');
+        let x=60,y=120;
+        try{if(time){const bb=time.getBBox();x=bb.x+bb.width/2;y=bb.y+bb.height+23;}else{const staff=svg.querySelector('.abcjs-staff');if(staff){const bb=staff.getBBox();y=bb.y+bb.height+19;}}}catch(e){}
+        const number=document.createElementNS('http://www.w3.org/2000/svg','text');
+        number.setAttribute('x',x);number.setAttribute('y',y);number.setAttribute('text-anchor','middle');
+        number.setAttribute('font-size','13');number.setAttribute('font-family','Georgia, serif');number.setAttribute('fill','#171717');
+        number.setAttribute('class','fg-system-start-number');number.textContent=String(first+1);svg.appendChild(number);
+    }
 }
 function renderFgOriginalScore(){
     clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
