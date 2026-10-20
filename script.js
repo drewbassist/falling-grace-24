@@ -2945,7 +2945,8 @@ function fgAbcBars(first,last){
             const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
             // Measure 2 repeats the tied A-flat from measure 1; no new flat is needed.
             const omitFlat=(first+i===1 && j===0 && ev.step==='A' && ev.alt===-1) ||
-                (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1);
+                (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1) ||
+                (first+i===5 && j===5 && ev.step==='B' && ev.alt===-1);
             const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
             notes.push((beam?'':' ')+token);
         }
