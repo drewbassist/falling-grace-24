@@ -2290,8 +2290,7 @@ async function downloadCurrentWav(){
         document.body.appendChild(link);link.click();link.remove();
         setTimeout(()=>URL.revokeObjectURL(url),60000);
         const status=document.querySelector("#transport-status");
-        if(status) status.textContent="WAV recording complete — check Downloads";
-        alert("WAV recording complete. Check your Mac's Downloads folder.");
+        // Chrome handles the completed download; no extra completion prompt.
     }catch(error){
         console.error("WAV export failed",error);
         const status=document.querySelector("#transport-status");
@@ -2945,7 +2944,8 @@ function fgAbcBars(first,last){
             const sixteenthPair=prior && prior.d===3 && ev.d===3 && Math.floor(prior.t/12)===Math.floor(ev.t/12);
             const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
             // Measure 2 repeats the tied A-flat from measure 1; no new flat is needed.
-            const omitFlat=first+i===1 && j===0 && ev.step==='A' && ev.alt===-1;
+            const omitFlat=(first+i===1 && j===0 && ev.step==='A' && ev.alt===-1) ||
+                (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1);
             const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
             notes.push((beam?'':' ')+token);
         }
@@ -2953,7 +2953,7 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:0 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:-8px 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round(((parent.clientWidth||1200)*0.8-72)/2)):Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
@@ -2965,6 +2965,11 @@ function fgDrawScoreSystem(parent,first,last){
         number.setAttribute('x',x);number.setAttribute('y',y);number.setAttribute('text-anchor','middle');
         number.setAttribute('font-size','13');number.setAttribute('font-family','Georgia, serif');number.setAttribute('fill','#171717');
         number.setAttribute('class','fg-system-start-number');number.textContent=String(first+1);svg.appendChild(number);
+        // Give the final system enough SVG canvas below the staff for '25'.
+        if(first===24){
+            const vb=svg.viewBox.baseVal;
+            if(vb && vb.width>0 && vb.height>0){svg.setAttribute('viewBox',[vb.x,vb.y,vb.width,Math.max(vb.height,y-vb.y+12)].join(' '));}
+        }
     }
 }
 function renderFgOriginalScore(){
