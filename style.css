@@ -425,3 +425,11 @@ h1{font-size:48px;margin-bottom:8px}
 #transport .fg-composition .fg-style-buttons{gap:5px !important;flex-wrap:nowrap !important;min-width:0 !important;}
 #transport .fg-composition .fg-style-buttons button{font-size:11px !important;padding:0 7px !important;height:34px !important;min-height:34px !important;white-space:nowrap !important;flex:0 0 auto !important;}
 @media(max-width:600px){#transport .fg-composition .fg-style-buttons{gap:3px !important;}#transport .fg-composition .fg-style-buttons button{font-size:10px !important;padding:0 5px !important;}}
+
+/* Responsive score fit: keep all four bars visible at 100% browser zoom. */
+@media screen {
+  #score-section { overflow-x:hidden !important; max-width:100%; box-sizing:border-box; }
+  #score, #score .score-systems { max-width:100%; min-width:0; }
+  #score .score-system { max-width:100%; box-sizing:border-box; }
+  #score .score-system svg { width:100% !important; max-width:100% !important; height:auto !important; }
+}
