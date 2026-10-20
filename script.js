@@ -2089,9 +2089,11 @@ async function playWithSoundFonts(recording=false){
         const totalMs=(26*barDur+0.2)*1000;
         if(recording && wavCapture){
             const capture=wavCapture;
-            setTimeout(()=>{if(capture.recorder.state!=="inactive")capture.recorder.stop();},totalMs);
+            audioSynth.timeoutIds.push(setTimeout(()=>{
+                if(capture.recorder.state!=="inactive") capture.recorder.stop();
+            },totalMs-100));
         }
-        audioSynth.timeoutIds.push(setTimeout(()=>{if(!audioSynth.stopped)stopPlayback();},totalMs));
+        if(!recording) audioSynth.timeoutIds.push(setTimeout(()=>{if(!audioSynth.stopped)stopPlayback();},totalMs));
         return;
     }
     // Schedule sustained notes as one attack, including cross-barline ties.
@@ -2287,13 +2289,18 @@ async function downloadCurrentWav(){
         link.download="Falling-Grace-"+new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")+".wav";
         document.body.appendChild(link);link.click();link.remove();
         setTimeout(()=>URL.revokeObjectURL(url),60000);
+        const status=document.querySelector("#transport-status");
+        if(status) status.textContent="WAV recording complete — check Downloads";
+        alert("WAV recording complete. Check your Mac's Downloads folder.");
     }catch(error){
         console.error("WAV export failed",error);
         const status=document.querySelector("#transport-status");
         if(status) status.textContent="WAV export failed: "+error.message;
         if(audioSynth) stopPlayback();
     }finally{
+        // Never let the normal playback stop routine mark a finished WAV as cancelled.
         wavCapture=null;
+        if(audioSynth) stopPlayback();
         audioLoading=false;
         if(button){button.disabled=false;button.textContent="↓ Download WAV";}
     }
