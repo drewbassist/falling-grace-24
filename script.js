@@ -2922,20 +2922,28 @@ function fgAbcBars(first,last){
             // The imported tie flag denotes an outgoing tie. Only join equal pitches.
             const tied=ev.tie && ev.m!==null && ((next&&next.m===ev.m)||( !next&&nextBar&&nextBar.m===ev.m));
             const triplet=ev.d===8 && (j===0 || events[j-1].d!==8) && j+2<events.length && events[j+1].d===8 && events[j+2].d===8;
-            notes.push((triplet?'(3':'')+fgAbcNote(ev)+duration+(tied?'-':''));
+            // Beam consecutive eighth notes within the same beat, and all three
+            // eighth-note triplets as one group. A space explicitly breaks beams.
+            const prior=notes.length ? events[j-1] : null;
+            const sameBeat=prior && Math.floor(prior.t/12)===Math.floor(ev.t/12);
+            const tripletContinuation=prior && prior.d===8 && ev.d===8 &&
+                Math.floor(prior.t/24)===Math.floor(ev.t/24);
+            const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation);
+            const token=(triplet?'(3':'')+fgAbcNote(ev)+duration+(tied?'-':'');
+            notes.push((beam?'':' ')+token);
         }
-        return `"${chords}" ${notes.join(' ')} |`;
+        return `"${chords}" ${notes.join('')} |`;
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:hidden;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
         let x=60,y=120;
-        try{if(time){const bb=time.getBBox();x=bb.x+bb.width/2;y=bb.y+bb.height+23;}else{const staff=svg.querySelector('.abcjs-staff');if(staff){const bb=staff.getBBox();y=bb.y+bb.height+19;}}}catch(e){}
+        try{if(time){const bb=time.getBBox();x=bb.x-15;y=bb.y+bb.height+23;}else{const staff=svg.querySelector('.abcjs-staff');if(staff){const bb=staff.getBBox();y=bb.y+bb.height+19;}}}catch(e){}
         const number=document.createElementNS('http://www.w3.org/2000/svg','text');
         number.setAttribute('x',x);number.setAttribute('y',y);number.setAttribute('text-anchor','middle');
         number.setAttribute('font-size','13');number.setAttribute('font-family','Georgia, serif');number.setAttribute('fill','#171717');
