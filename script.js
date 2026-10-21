@@ -1070,6 +1070,11 @@ function buildABC(){
 
 function renderScore(){
     if(fgOriginalMode){renderFgOriginalScore();return;}
+    // Undo original-only viewport styling when returning to generated scores.
+    const originalSection=document.querySelector("#score-section");
+    if(originalSection) originalSection.style.overflowY="";
+    const generatedTarget=document.querySelector("#score");
+    if(generatedTarget) generatedTarget.style.height="";
     clearScoreFollower();
 
     const container=document.querySelector("#score");
