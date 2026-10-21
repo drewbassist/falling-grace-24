@@ -2953,7 +2953,7 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:50%;max-width:50%;margin:-8px 0 2px 0;overflow:visible;position:relative;':'width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round((parent.clientWidth||1200)/2-72)):Math.max(520,Math.round((parent.clientWidth||1200)-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
@@ -2965,6 +2965,30 @@ function fgDrawScoreSystem(parent,first,last){
         number.setAttribute('x',x);number.setAttribute('y',y);number.setAttribute('text-anchor','middle');
         number.setAttribute('font-size','13');number.setAttribute('font-family','Georgia, serif');number.setAttribute('fill','#171717');
         number.setAttribute('class','fg-system-start-number');number.textContent=String(first+1);svg.appendChild(number);
+        if(first===24){
+            // Only the original melody has a coda. Keep the seventh staff
+            // left-aligned with the preceding six, at half their line width.
+            const ns='http://www.w3.org/2000/svg';
+            const clef=svg.querySelector('.abcjs-clef');
+            const staff=svg.querySelector('.abcjs-staff');
+            let cx=45,cy=16;
+            try{
+                if(clef){const b=clef.getBBox();cx=b.x+b.width/2;cy=b.y-12;}
+                else if(staff){const b=staff.getBBox();cx=b.x+12;cy=b.y-12;}
+            }catch(e){}
+            const label=document.createElementNS(ns,'text');
+            label.setAttribute('x',cx);label.setAttribute('y',cy);
+            label.setAttribute('text-anchor','middle');
+            label.setAttribute('font-family','Georgia, serif');
+            label.setAttribute('font-size','15');label.setAttribute('font-weight','bold');
+            label.setAttribute('fill','#171717');label.textContent='Coda';
+            svg.appendChild(label);
+            const vb=svg.viewBox.baseVal;
+            if(vb && vb.width>0 && vb.height>0 && cy<vb.y+5){
+                const newY=cy-10;
+                svg.setAttribute('viewBox',[vb.x,newY,vb.width,vb.height+vb.y-newY].join(' '));
+            }
+        }
         // Give the final system enough SVG canvas below the staff for '25'.
         if(first===24){
             const vb=svg.viewBox.baseVal;
@@ -2988,7 +3012,7 @@ function fgFitOriginalToViewport(){
     wrap.style.maxWidth='100%';
     wrap.style.margin='0 auto';
     wrap.style.transform='none';
-    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-10);
+    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-16);
     const naturalHeight=wrap.scrollHeight;
     if(!naturalHeight)return;
     const fit=Math.min(1,available/naturalHeight);
@@ -2998,12 +3022,13 @@ function fgFitOriginalToViewport(){
     wrap.style.width=(100/fit)+'%';
     wrap.style.maxWidth='none';
     section.style.overflowY='hidden';
+    target.style.height=(naturalHeight*fit)+'px';
 }
 function renderFgOriginalScore(){
     clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
     target.replaceChildren();const wrap=document.createElement('div');wrap.className='score-systems';target.appendChild(wrap);
     for(let i=0;i<26;i+=4)fgDrawScoreSystem(wrap,i,Math.min(i+4,26));
-    requestAnimationFrame(fgFitOriginalToViewport);
+    requestAnimationFrame(()=>{fgFitOriginalToViewport();requestAnimationFrame(fgFitOriginalToViewport);});
 }
 function fgAppendCoda(){
     const wrap=document.querySelector('#score .score-systems');if(wrap&&window.ABCJS)fgDrawScoreSystem(wrap,24,26);
