@@ -2972,10 +2972,27 @@ function fgDrawScoreSystem(parent,first,last){
         }
     }
 }
+// Fit the complete seven-system Original Melody (including the coda) into
+// the visible Chrome viewport at normal browser zoom. Generated scores are untouched.
+function fgFitOriginalToViewport(){
+    if(!fgOriginalMode)return;
+    const section=document.querySelector('#score-section');
+    const wrap=document.querySelector('#score .score-systems');
+    if(!section||!wrap)return;
+    wrap.style.zoom='1';
+    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-12);
+    const naturalHeight=wrap.getBoundingClientRect().height;
+    if(!naturalHeight)return;
+    const fit=Math.min(1,available/naturalHeight);
+    wrap.style.zoom=String(fit);
+    wrap.style.marginLeft='auto';wrap.style.marginRight='auto';
+    section.style.overflowY='hidden';
+}
 function renderFgOriginalScore(){
     clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
     target.replaceChildren();const wrap=document.createElement('div');wrap.className='score-systems';target.appendChild(wrap);
     for(let i=0;i<26;i+=4)fgDrawScoreSystem(wrap,i,Math.min(i+4,26));
+    requestAnimationFrame(fgFitOriginalToViewport);
 }
 function fgAppendCoda(){
     const wrap=document.querySelector('#score .score-systems');if(wrap&&window.ABCJS)fgDrawScoreSystem(wrap,24,26);
@@ -3041,3 +3058,5 @@ function fgInstallExtraButtons(){
         pdf.insertAdjacentElement('afterend',b);
     }
 }
+
+window.addEventListener("resize",()=>{if(fgOriginalMode)requestAnimationFrame(fgFitOriginalToViewport);});
