@@ -1072,9 +1072,18 @@ function renderScore(){
     if(fgOriginalMode){renderFgOriginalScore();return;}
     // Undo original-only viewport styling when returning to generated scores.
     const originalSection=document.querySelector("#score-section");
-    if(originalSection) originalSection.style.overflowY="";
+    if(originalSection){
+        originalSection.style.overflow="visible";
+        originalSection.style.overflowY="visible";
+        originalSection.style.height="auto";
+        originalSection.style.maxHeight="none";
+    }
     const generatedTarget=document.querySelector("#score");
-    if(generatedTarget) generatedTarget.style.height="";
+    if(generatedTarget){
+        generatedTarget.style.height="auto";
+        generatedTarget.style.maxHeight="none";
+        generatedTarget.style.overflow="visible";
+    }
     clearScoreFollower();
 
     const container=document.querySelector("#score");
@@ -3009,6 +3018,11 @@ function fgFitOriginalToViewport(){
     const wrap=document.querySelector('#score .score-systems');
     const target=document.querySelector('#score');
     if(!section||!wrap||!target)return;
+    section.style.overflow='hidden';
+    section.style.height='auto';
+    section.style.maxHeight='none';
+    target.style.overflow='visible';
+    target.style.maxHeight='none';
 
     // Measure at the score's actual engraving width. Do not expand the
     // engraving to compensate for a later reduction: that made notes tiny.
