@@ -2953,9 +2953,9 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:40%;max-width:40%;margin:-8px 0 2px 10%;overflow:visible;position:relative;':'width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText=last-first===2?'width:50%;max-width:50%;margin:-8px 0 2px 0;overflow:visible;position:relative;':'width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
-    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round(((parent.clientWidth||1200)*0.8-72)/2)):Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
+    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round((parent.clientWidth||1200)/2-72)):Math.max(520,Math.round((parent.clientWidth||1200)-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
@@ -2978,12 +2978,27 @@ function fgFitOriginalToViewport(){
     if(!fgOriginalMode)return;
     const section=document.querySelector('#score-section');
     const wrap=document.querySelector('#score .score-systems');
-    if(!section||!wrap)return;
+    const target=document.querySelector('#score');
+    if(!section||!wrap||!target)return;
+    // Reset to natural engraving dimensions before measuring. Never compound zoom.
     wrap.style.zoom='1';
+    wrap.style.width='100%';
     const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-12);
     const naturalHeight=wrap.getBoundingClientRect().height;
     if(!naturalHeight)return;
     const fit=Math.min(1,available/naturalHeight);
+    // Re-engrave at the width that will fill the viewport AFTER fitting vertically.
+    // This changes horizontal bar spacing, not the aspect ratio of musical glyphs.
+    const fullWidth=target.clientWidth||1200;
+    const engravingWidth=Math.round(fullWidth/fit);
+    wrap.style.width=engravingWidth+'px';
+    [...wrap.querySelectorAll('.score-system')].forEach((sys,index)=>{
+        if(!sys.querySelector('svg'))return;
+        // ABCJS rendered SVGs can be widened using viewBox only if the
+        // engraving is regenerated; re-render the seven systems instead.
+        sys.remove();
+        fgDrawScoreSystem(wrap,index*4,Math.min(index*4+4,26));
+    });
     wrap.style.zoom=String(fit);
     wrap.style.marginLeft='auto';wrap.style.marginRight='auto';
     section.style.overflowY='hidden';
