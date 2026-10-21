@@ -677,7 +677,6 @@ function render(){
         }
     });
     renderScore();
-    if(!fgOriginalMode) fgAppendCoda();
 }
 
 function generateAll(){
@@ -2944,7 +2943,7 @@ function fgAbcBars(first,last){
             const sixteenthPair=prior && prior.d===3 && ev.d===3 && Math.floor(prior.t/12)===Math.floor(ev.t/12);
             const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
             // A cross-barline tied continuation retains its accidental without reprinting it.
-            const omitFlat=(first+i===1 && j===0 && prevBar && prevBar.tie && prevBar.m===ev.m) ||
+            const omitFlat=(first+i===1 && ev.step==='E' && ev.alt===-1) ||
                 (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1) ||
                 (first+i===5 && j===5 && ev.step==='B' && ev.alt===-1);
             const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
