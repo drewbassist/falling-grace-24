@@ -2980,27 +2980,23 @@ function fgFitOriginalToViewport(){
     const wrap=document.querySelector('#score .score-systems');
     const target=document.querySelector('#score');
     if(!section||!wrap||!target)return;
-    // Reset to natural engraving dimensions before measuring. Never compound zoom.
+
+    // Measure at the score's actual engraving width. Do not expand the
+    // engraving to compensate for a later reduction: that made notes tiny.
     wrap.style.zoom='1';
     wrap.style.width='100%';
-    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-12);
-    const naturalHeight=wrap.getBoundingClientRect().height;
+    wrap.style.maxWidth='100%';
+    wrap.style.margin='0 auto';
+    wrap.style.transform='none';
+    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-10);
+    const naturalHeight=wrap.scrollHeight;
     if(!naturalHeight)return;
     const fit=Math.min(1,available/naturalHeight);
-    // Re-engrave at the width that will fill the viewport AFTER fitting vertically.
-    // This changes horizontal bar spacing, not the aspect ratio of musical glyphs.
-    const fullWidth=target.clientWidth||1200;
-    const engravingWidth=Math.round(fullWidth/fit);
-    wrap.style.width=engravingWidth+'px';
-    [...wrap.querySelectorAll('.score-system')].forEach((sys,index)=>{
-        if(!sys.querySelector('svg'))return;
-        // ABCJS rendered SVGs can be widened using viewBox only if the
-        // engraving is regenerated; re-render the seven systems instead.
-        sys.remove();
-        fgDrawScoreSystem(wrap,index*4,Math.min(index*4+4,26));
-    });
     wrap.style.zoom=String(fit);
-    wrap.style.marginLeft='auto';wrap.style.marginRight='auto';
+    // CSS zoom affects layout height and width together, keeping the
+    // original note proportions and all seven systems visible.
+    wrap.style.width=(100/fit)+'%';
+    wrap.style.maxWidth='none';
     section.style.overflowY='hidden';
 }
 function renderFgOriginalScore(){
