@@ -1253,7 +1253,7 @@ function renderScore(){
                 abc.join("\n"),
                 {
                     staffwidth:staffWidth,
-                    scale:1.0,
+                    scale:1.1,
                     add_classes:true,
                     oneSvgPerLine:false,
                     paddingtop:
