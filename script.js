@@ -2969,7 +2969,7 @@ function fgAbcBars(first,last){
 function fgDrawScoreSystem(parent,first,last){
     const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
-    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round((parent.clientWidth||1200)/2-72)):Math.max(520,Math.round((parent.clientWidth||1200)-72)),scale:1,add_classes:true,paddingleft:24,paddingright:24});
+    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round((parent.clientWidth||1200)/2-72)):Math.max(520,Math.round((parent.clientWidth||1200)-72)),scale:1.1,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
         const time=svg.querySelector('.abcjs-time-signature');
