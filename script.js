@@ -2943,8 +2943,8 @@ function fgAbcBars(first,last){
                 Math.floor(prior.t/24)===Math.floor(ev.t/24);
             const sixteenthPair=prior && prior.d===3 && ev.d===3 && Math.floor(prior.t/12)===Math.floor(ev.t/12);
             const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
-            // Measure 2 repeats the tied A-flat from measure 1; no new flat is needed.
-            const omitFlat=(first+i===1 && j===0 && ev.step==='A' && ev.alt===-1) ||
+            // A cross-barline tied continuation retains its accidental without reprinting it.
+            const omitFlat=(first+i===1 && j===0 && prevBar && prevBar.tie && prevBar.m===ev.m) ||
                 (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1) ||
                 (first+i===5 && j===5 && ev.step==='B' && ev.alt===-1);
             const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
