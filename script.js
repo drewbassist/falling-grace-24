@@ -3032,7 +3032,7 @@ function fgFitOriginalToViewport(){
     section.style.height='auto';
     section.style.maxHeight='none';
     section.style.overflowY='visible';
-    wrap.style.zoom='1';
+    wrap.style.zoom='0.90';
     wrap.style.width='100%';
     wrap.style.maxWidth='100%';
     wrap.style.margin='0 auto';
