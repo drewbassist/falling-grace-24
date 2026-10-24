@@ -2967,9 +2967,9 @@ function fgAbcBars(first,last){
     }).join(' ');
 }
 function fgDrawScoreSystem(parent,first,last){
-    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
+    const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
-    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(220,Math.round(((parent.clientWidth||1200)-80)/2/1.3)):Math.max(360,Math.round(((parent.clientWidth||1200)-80)/1.3)),scale:1.3,add_classes:true,paddingleft:24,paddingright:24});
+    ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1.0,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
         // Keep the complete engraved SVG inside its system at 100% zoom.
@@ -3022,35 +3022,23 @@ function fgDrawScoreSystem(parent,first,last){
 // Fit the complete seven-system Original Melody (including the coda) into
 // the visible Chrome viewport at normal browser zoom. Generated scores are untouched.
 function fgFitOriginalToViewport(){
+    // Keep the Original Melody at the generated score's native engraving scale.
+    // Fitting seven systems into the viewport made every note much smaller.
     if(!fgOriginalMode)return;
     const section=document.querySelector('#score-section');
     const wrap=document.querySelector('#score .score-systems');
     const target=document.querySelector('#score');
     if(!section||!wrap||!target)return;
-    section.style.overflow='hidden';
     section.style.height='auto';
     section.style.maxHeight='none';
-    target.style.overflow='visible';
-    target.style.maxHeight='none';
-
-    // Measure at the score's actual engraving width. Do not expand the
-    // engraving to compensate for a later reduction: that made notes tiny.
+    section.style.overflowY='visible';
     wrap.style.zoom='1';
     wrap.style.width='100%';
     wrap.style.maxWidth='100%';
     wrap.style.margin='0 auto';
     wrap.style.transform='none';
-    const available=Math.max(180,window.innerHeight-section.getBoundingClientRect().top-16);
-    const naturalHeight=wrap.scrollHeight;
-    if(!naturalHeight)return;
-    const fit=Math.min(1,available/naturalHeight);
-    wrap.style.zoom=String(fit);
-    // CSS zoom affects layout height and width together, keeping the
-    // original note proportions and all seven systems visible.
-    wrap.style.width=(100/fit)+'%';
-    wrap.style.maxWidth='none';
-    section.style.overflowY='hidden';
-    target.style.height=(naturalHeight*fit)+'px';
+    target.style.height='auto';
+    target.style.maxHeight='none';
 }
 function renderFgOriginalScore(){
     clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
