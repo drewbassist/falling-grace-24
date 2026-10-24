@@ -3012,6 +3012,44 @@ function fgDrawScoreSystem(parent,first,last){
                 svg.setAttribute('viewBox',[vb.x,newY,vb.width,vb.height+vb.y-newY].join(' '));
             }
         }
+        // Original-only repeat marks and coda label. Draw as SVG annotations
+        // so ABCJS keeps exactly four bars per earlier system and six on the last.
+        if(first===0 || first===20){
+            const ns='http://www.w3.org/2000/svg';
+            const bbox=el=>{try{return el?.getBBox()||null;}catch(e){return null;}};
+            const staff=bbox(svg.querySelector('.abcjs-staff'));
+            if(staff){
+                const top=staff.y, bottom=staff.y+staff.height, gap=staff.height/4;
+                const addLine=(x,w)=>{const e=document.createElementNS(ns,'line');
+                    e.setAttribute('x1',x);e.setAttribute('x2',x);
+                    e.setAttribute('y1',top);e.setAttribute('y2',bottom);
+                    e.setAttribute('stroke','#171717');e.setAttribute('stroke-width',w);svg.appendChild(e);};
+                const addDot=(x,y)=>{const e=document.createElementNS(ns,'circle');
+                    e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',1.7);
+                    e.setAttribute('fill','#171717');svg.appendChild(e);};
+                if(first===0){
+                    const ts=bbox(svg.querySelector('.abcjs-time-signature'));
+                    const note=bbox(svg.querySelector('.abcjs-m0.abcjs-note, .abcjs-m0 .abcjs-note'));
+                    const x=ts?ts.x+ts.width+8:note?note.x-18:null;
+                    if(x!==null){addLine(x,3);addLine(x+5,1);addDot(x+10,top+1.5*gap);addDot(x+10,top+2.5*gap);}
+                }else{
+                    // Bar 24 is local measure 3 on the six-bar final system.
+                    const bar=bbox(svg.querySelector('.abcjs-m3.abcjs-bar, .abcjs-m3 .abcjs-bar'));
+                    const next=bbox(svg.querySelector('.abcjs-m4.abcjs-note, .abcjs-m4 .abcjs-note'));
+                    const x=bar?bar.x:next?next.x-22:null;
+                    if(x!==null){addDot(x-10,top+1.5*gap);addDot(x-10,top+2.5*gap);addLine(x-5,1);addLine(x,3);}
+                    // Coda starts at measure 25, not at the start of the final system.
+                    const chord=bbox(svg.querySelector('.abcjs-m4.abcjs-chord, .abcjs-m4 .abcjs-chord'));
+                    const note25=bbox(svg.querySelector('.abcjs-m4.abcjs-note, .abcjs-m4 .abcjs-note'));
+                    if(note25){const label=document.createElementNS(ns,'text');
+                        label.setAttribute('x',chord?chord.x:note25.x);
+                        label.setAttribute('y',Math.min(top-17,chord?chord.y-9:top-17));
+                        label.setAttribute('font-family','Georgia, serif');
+                        label.setAttribute('font-size','15');label.setAttribute('font-weight','bold');
+                        label.setAttribute('fill','#171717');label.textContent='Coda';svg.appendChild(label);}
+                }
+            }
+        }
         // Give the final system enough SVG canvas below the staff for '25'.
         if(first===24){
             const vb=svg.viewBox.baseVal;
