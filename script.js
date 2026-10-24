@@ -1538,7 +1538,7 @@ function getTempo(){
 
     let bpm=el
         ? Number(el.value)
-        : 150;
+        : 80;
 
     if(!Number.isFinite(bpm)){
         bpm=150;
