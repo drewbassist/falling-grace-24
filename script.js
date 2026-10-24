@@ -3032,10 +3032,14 @@ function fgFitOriginalToViewport(){
     section.style.height='auto';
     section.style.maxHeight='none';
     section.style.overflowY='visible';
-    wrap.style.zoom='0.90';
+    wrap.style.zoom='1';
     wrap.style.width='100%';
     wrap.style.maxWidth='100%';
-    wrap.style.margin='0 auto';
+    // Shift only the original notation about one screen inch to the right.
+    // Reduce its available width so the last six-bar system remains on screen.
+    wrap.style.margin='0 0 0 96px';
+    wrap.style.width='calc(100% - 96px)';
+    wrap.style.maxWidth='calc(100% - 96px)';
     wrap.style.transform='none';
     target.style.height='auto';
     target.style.maxHeight='none';
@@ -3043,7 +3047,9 @@ function fgFitOriginalToViewport(){
 function renderFgOriginalScore(){
     clearScoreFollower();const target=document.querySelector('#score');if(!target||!window.ABCJS)return;
     target.replaceChildren();const wrap=document.createElement('div');wrap.className='score-systems';target.appendChild(wrap);
-    for(let i=0;i<26;i+=4)fgDrawScoreSystem(wrap,i,Math.min(i+4,26));
+    // Five four-bar systems followed by a six-bar final system (21–26).
+    for(let i=0;i<20;i+=4)fgDrawScoreSystem(wrap,i,i+4);
+    fgDrawScoreSystem(wrap,20,26);
     requestAnimationFrame(()=>{fgFitOriginalToViewport();requestAnimationFrame(fgFitOriginalToViewport);});
 }
 function fgAppendCoda(){
