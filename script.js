@@ -234,8 +234,8 @@ let audioState="stopped";
 let wavCapture=null; // Current-iteration recording; independent of score generation.
 let melodySound="rhodes";
 let accompanimentSound="piano";
-let melodyVolume=1;
-let accompanimentVolume=1;
+let melodyVolume=0.8;
+let accompanimentVolume=0.8;
 let fgPracticeMode="normal"; // normal, mute, trade
 let fgHiHatEnabled=false;
 
@@ -1942,7 +1942,7 @@ async function playWithSoundFonts(recording=false){
     hiHatMaster.connect(ctx.destination);
     const melodyMaster=ctx.createGain();
     const accompanimentMaster=ctx.createGain();
-    melodyMaster.gain.value=melodyVolume * 0.90;
+    melodyMaster.gain.value=melodyVolume;
     accompanimentMaster.gain.value=accompanimentVolume;
     melodyMaster.connect(ctx.destination);
     accompanimentMaster.connect(ctx.destination);
@@ -2443,7 +2443,7 @@ function modernizeControls(){
     makeVolumeControl("melodyVolume","Melody Vol",melodyVolume,value=>{
         melodyVolume=value;
         if(audioSynth?.melodyMaster){
-            audioSynth.melodyMaster.gain.setValueAtTime(value * 0.50,audioSynth.context.currentTime);
+            audioSynth.melodyMaster.gain.setValueAtTime(value,audioSynth.context.currentTime);
         }
     });
     makeVolumeControl("accompanimentVolume","Accomp Vol",accompanimentVolume,value=>{
