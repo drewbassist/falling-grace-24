@@ -2974,11 +2974,12 @@ function fgDrawScoreSystem(parent,first,last){
     if(svg){
         // Keep the complete engraved SVG inside its system at 100% zoom.
         // ABCJS's scale=1.3 also scales the requested staffwidth.
-        const rawWidth=parseFloat(svg.getAttribute('width'))||svg.getBoundingClientRect().width;
-        const rawHeight=parseFloat(svg.getAttribute('height'))||svg.getBoundingClientRect().height;
-        if(!svg.hasAttribute('viewBox') && rawWidth>0 && rawHeight>0)
-            svg.setAttribute('viewBox',`0 0 ${rawWidth} ${rawHeight}`);
-        svg.style.width='100%';svg.style.maxWidth='100%';svg.style.height='auto';
+        // Preserve ABCJS's own SVG coordinate system. Creating a viewBox from
+        // the rendered width causes extreme magnification when ABCJS already
+        // uses a transformed internal drawing group.
+        svg.style.width='auto';
+        svg.style.maxWidth='100%';
+        svg.style.height='auto';
 
         const time=svg.querySelector('.abcjs-time-signature');
         let x=60,y=120;

@@ -436,3 +436,8 @@ h1{font-size:48px;margin-bottom:8px}
 
 /* Keep full score width visible without changing musical content. */
 @media screen { #score .score-system { overflow:visible !important; } #score .score-system svg { display:block; width:100% !important; max-width:100% !important; height:auto !important; } }
+
+/* Score zoom repair: retain ABCJS intrinsic SVG geometry. */
+@media screen {
+  #score .score-system svg { width:auto !important; max-width:100% !important; height:auto !important; }
+}
