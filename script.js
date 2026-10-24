@@ -1942,7 +1942,7 @@ async function playWithSoundFonts(recording=false){
     hiHatMaster.connect(ctx.destination);
     const melodyMaster=ctx.createGain();
     const accompanimentMaster=ctx.createGain();
-    melodyMaster.gain.value=melodyVolume * 0.50;
+    melodyMaster.gain.value=melodyVolume * 0.90;
     accompanimentMaster.gain.value=accompanimentVolume;
     melodyMaster.connect(ctx.destination);
     accompanimentMaster.connect(ctx.destination);
