@@ -2038,7 +2038,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
         audioSynth.gains.push(gain);
     };
 
-    const playMelodyVoice=(midi,start,dur,level=0.05)=>{
+    const playMelodyVoice=(midi,start,dur,level=0.10)=>{
         playSample(melodyInstrument,midi,start,Math.max(0.08,dur),level,melodyMaster);
     };
 
