@@ -433,3 +433,6 @@ h1{font-size:48px;margin-bottom:8px}
   #score .score-system { max-width:100%; box-sizing:border-box; }
   #score .score-system svg { width:100% !important; max-width:100% !important; height:auto !important; }
 }
+
+/* Keep full score width visible without changing musical content. */
+@media screen { #score .score-system { overflow:visible !important; } #score .score-system svg { display:block; width:100% !important; max-width:100% !important; height:auto !important; } }

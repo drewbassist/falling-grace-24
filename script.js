@@ -2969,9 +2969,17 @@ function fgAbcBars(first,last){
 function fgDrawScoreSystem(parent,first,last){
     const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:100%;max-width:100%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
     const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
-    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(260,Math.round((parent.clientWidth||1200)/2-72)):Math.max(520,Math.round((parent.clientWidth||1200)-72)),scale:1.3,add_classes:true,paddingleft:24,paddingright:24});
+    ABCJS.renderAbc(sys,abc,{staffwidth:last-first===2?Math.max(220,Math.round(((parent.clientWidth||1200)-80)/2/1.3)):Math.max(360,Math.round(((parent.clientWidth||1200)-80)/1.3)),scale:1.3,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
+        // Keep the complete engraved SVG inside its system at 100% zoom.
+        // ABCJS's scale=1.3 also scales the requested staffwidth.
+        const rawWidth=parseFloat(svg.getAttribute('width'))||svg.getBoundingClientRect().width;
+        const rawHeight=parseFloat(svg.getAttribute('height'))||svg.getBoundingClientRect().height;
+        if(!svg.hasAttribute('viewBox') && rawWidth>0 && rawHeight>0)
+            svg.setAttribute('viewBox',`0 0 ${rawWidth} ${rawHeight}`);
+        svg.style.width='100%';svg.style.maxWidth='100%';svg.style.height='auto';
+
         const time=svg.querySelector('.abcjs-time-signature');
         let x=60,y=120;
         try{if(time){const bb=time.getBBox();x=bb.x-15;y=bb.y+bb.height+23;}else{const staff=svg.querySelector('.abcjs-staff');if(staff){const bb=staff.getBBox();y=bb.y+bb.height+19;}}}catch(e){}
