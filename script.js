@@ -1943,7 +1943,7 @@ async function playWithSoundFonts(recording=false){
     const melodyMaster=ctx.createGain();
     const accompanimentMaster=ctx.createGain();
     melodyMaster.gain.value=melodyVolume*1.25;
-accompanimentMaster.gain.value=accompanimentVolume*1.25;
+accompanimentMaster.gain.value=accompanimentVolume*1.8;
     melodyMaster.connect(ctx.destination);
     accompanimentMaster.connect(ctx.destination);
     if(recording){
@@ -2449,7 +2449,7 @@ function modernizeControls(){
     makeVolumeControl("accompanimentVolume","Accomp Vol",accompanimentVolume,value=>{
         accompanimentVolume=value;
         if(audioSynth?.accompanimentMaster){
-            audioSynth.accompanimentMaster.gain.setValueAtTime(value*1.25,audioSynth.context.currentTime);
+            audioSynth.accompanimentMaster.gain.setValueAtTime(value*1.8,audioSynth.context.currentTime);
         }
     });
 
