@@ -183,56 +183,75 @@ function clearGSMeasureMarker(){
 }
 function startGSMeasureMarker(startTime,beat,token){
  clearGSMeasureMarker();
- const measures=[];
  const systems=[...document.querySelectorAll('#score .score-system')];
+ const measures=[];
  for(let group=0;group<systems.length;group++){
   const system=systems[group],svg=system.querySelector('svg');
   if(!svg)continue;
   const sr=system.getBoundingClientRect(),vr=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;
-  const scaleX=vr.width/(vb.width||vr.width),scaleY=vr.height/(vb.height||vr.height);
-  const elementPoint=(node,bottom=false)=>{
-   try{
-    const bb=node.getBBox(),pt=svg.createSVGPoint();
-    pt.x=bb.x+(bottom?0:bb.width/2);pt.y=bb.y+(bottom?bb.height:0);
-    const matrix=node.getCTM(),p=matrix?pt.matrixTransform(matrix):pt;
-    return {x:vr.left-sr.left+(p.x-vb.x)*scaleX,y:vr.top-sr.top+(p.y-vb.y)*scaleY};
+  const sx=vr.width/(vb.width||vr.width),sy=vr.height/(vb.height||vr.height);
+  const svgX=x=>vr.left-sr.left+(x-vb.x)*sx;
+  const point=node=>{
+   try{const bb=node.getBBox(),pt=svg.createSVGPoint();pt.x=bb.x+bb.width/2;pt.y=bb.y;
+    const mat=node.getCTM(),p=mat?pt.matrixTransform(mat):pt;return svgX(p.x);
    }catch{return null;}
   };
-  const barlines=[...svg.querySelectorAll('.abcjs-bar')].map(n=>elementPoint(n)?.x)
-   .filter(x=>x!=null).sort((a,b)=>a-b).filter((x,i,a)=>i===0||x-a[i-1]>2);
+  // Use the actual engraved barlines. ABCJS class names vary across versions,
+  // so do not make marker visibility depend on finding notehead classes.
+  const bars=[...svg.querySelectorAll('.abcjs-bar')].map(point)
+   .filter(x=>Number.isFinite(x)).sort((x,y)=>x-y)
+   .filter((x,i,arr)=>i===0||x-arr[i-1]>3);
+  const first=[];
+  for(let m=0;m<4;m++){
+   const nodes=[...svg.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note, .abcjs-m${m}.abcjs-rest, .abcjs-m${m} .abcjs-rest, .abcjs-m${m}`)];
+   const xs=nodes.map(point).filter(x=>Number.isFinite(x));
+   first[m]=xs.length?Math.min(...xs):null;
+  }
+  // SVG coordinates are relative to the score system; the overlay stays
+  // inside that system even if the page is zoomed or resized.
+  const svgLeft=vr.left-sr.left,svgRight=svgLeft+vr.width;
+  const positions=[];
+  for(let m=0;m<4;m++){
+   const anchor=first[m];
+   const before=anchor===null?null:[...bars].reverse().find(x=>x<anchor-3);
+   const byBar=m>0?bars[m-1]:null;
+   const fallback=svgLeft+vr.width*(m+.12)/4;
+   positions[m]=before??byBar??(anchor!==null?anchor-12:fallback);
+  }
+  // If a class lookup returns incomplete or non-increasing coordinates,
+  // fall back to evenly spaced positions instead of hiding the arrow.
+  for(let m=0;m<4;m++){
+   if(m>0&&positions[m]<=positions[m-1]+4)
+    positions[m]=svgLeft+vr.width*(m+.12)/4;
+  }
   let staffBottom=null;
   for(const line of svg.querySelectorAll('.abcjs-staff')){
-   const point=elementPoint(line,true);
-   if(point)staffBottom=Math.max(staffBottom??-Infinity,point.y);
+   try{const bb=line.getBBox(),pt=svg.createSVGPoint();pt.x=bb.x;pt.y=bb.y+bb.height;
+    const mat=line.getCTM(),p=mat?pt.matrixTransform(mat):pt;
+    const y=vr.top-sr.top+(p.y-vb.y)*sy;
+    if(Number.isFinite(y))staffBottom=Math.max(staffBottom??-Infinity,y);
+   }catch{}
   }
-  for(let m=0;m<4;m++){
-   const symbols=[...svg.querySelectorAll(`.abcjs-m${m}.abcjs-note, .abcjs-m${m} .abcjs-note, .abcjs-m${m}.abcjs-rest, .abcjs-m${m} .abcjs-rest`)];
-   const xs=symbols.map(n=>elementPoint(n)?.x).filter(x=>x!=null);
-   const first=xs.length?Math.min(...xs):null;
-   const preceding=m===0||first===null?null:[...barlines].reverse().find(x=>x<first-2);
-   const x=preceding??(first!==null?first-12:barlines[m-1]);
-   if(x!=null)measures[group*4+m]={system,x,staffBottom};
-  }
+  // Keep the arrow in the visible SVG area if staff-line detection fails.
+  const y=staffBottom??(vr.top-sr.top+vr.height*.75);
+  for(let m=0;m<4;m++)measures[group*4+m]={system,x:positions[m],y};
  }
  const markers=new Map();
  const update=()=>{
   if(!playing||token!==playToken){clearGSMeasureMarker();return;}
-  const elapsed=ctx.currentTime-startTime;
-  const bar=Math.max(0,Math.min(15,Math.floor(Math.max(0,elapsed) / (4*beat))%16));
+  const elapsed=Math.max(0,ctx.currentTime-startTime);
+  const bar=Math.min(15,Math.floor(elapsed/(4*beat))%16);
   const active=measures[bar];
   for(const [system,marker] of markers)marker.style.display=active&&system===active.system?'block':'none';
   if(active){
    let marker=markers.get(active.system);
    if(!marker){
     marker=document.createElement('div');marker.className='fg-measure-marker';
-    // GS does not include FG's marker CSS: style it here so the arrow is visible.
-    marker.style.cssText='position:absolute;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:6px solid #2563eb;transform:translateX(-50%);pointer-events:none;z-index:10;';
+    marker.style.cssText='position:absolute;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid #2563eb;transform:translateX(-50%);pointer-events:none;z-index:9999;display:block;';
     marker.setAttribute('aria-hidden','true');active.system.appendChild(marker);
     markers.set(active.system,marker);
    }
-   marker.style.left=active.x+'px';
-   if(active.staffBottom!==null)marker.style.top=(active.staffBottom+1)+'px';
-   marker.style.display='block';
+   marker.style.left=active.x+'px';marker.style.top=(active.y+2)+'px';marker.style.display='block';
   }
   gsMarkerFrame=requestAnimationFrame(update);
  };
