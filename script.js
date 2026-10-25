@@ -225,6 +225,8 @@ function startGSMeasureMarker(startTime,beat,token){
    let marker=markers.get(active.system);
    if(!marker){
     marker=document.createElement('div');marker.className='fg-measure-marker';
+    // GS does not include FG's marker CSS: style it here so the arrow is visible.
+    marker.style.cssText='position:absolute;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:6px solid #2563eb;transform:translateX(-50%);pointer-events:none;z-index:10;';
     marker.setAttribute('aria-hidden','true');active.system.appendChild(marker);
     markers.set(active.system,marker);
    }
