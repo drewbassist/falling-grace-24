@@ -2047,7 +2047,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
         const barIndex=Math.max(0,Math.min(B.length-1,Math.round((start-startTime)/barDur) % B.length));
         const fixedVoicing=ACCOMP_VOICINGS[barIndex];
         const chordNotes=fixedVoicing || padIntervals(primary).map(interval=>chordRootMidi(primary)+interval);
-        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.19,accompanimentMaster));
+        chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.30,accompanimentMaster));
     };
 
     // Short, dry synthesized closed hi-hat on beats 2 and 4 only.
@@ -2081,15 +2081,15 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
                 // The original melody has a 26-bar form. Do not wrap coda
                 // accompaniment back to the fixed 24-bar voicing array.
                 const codaVoicing=i===24?[56,60,63,67]:[61,65,68,72];
-                codaVoicing.forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur,0.19,accompanimentMaster));
+                codaVoicing.forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur,0.30,accompanimentMaster));
             }
             else if([4,5,10,21].includes(i)){
                 const pairs={4:[[53,56,60,63],[53,56,62,70]],5:[[55,58,63,67],[54,60,62,69]],10:[[52,55,57,60],[54,57,60,62]],21:[[51,55,58,60],[53,56,58,62]]};
-                pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.19,accompanimentMaster));
-                pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.19,accompanimentMaster));
+                pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.30,accompanimentMaster));
+                pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.30,accompanimentMaster));
             }else if(i===20){
-                [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.19,accompanimentMaster));
-                [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.19,accompanimentMaster));
+                [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,barDur/2,0.30,accompanimentMaster));
+                [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+barDur/2,barDur/2,0.30,accompanimentMaster));
             }else playAccompanimentChord(B[i][0],barStart,barDur);
             if(fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1))continue;
         }
@@ -2121,12 +2121,12 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
                 10:[[52,55,57,60],[54,57,60,62]], // Am7 / D7
                 21:[[51,55,58,60],[53,56,58,62]] // Cm7 / F7
             };
-            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.19,accompanimentMaster));
-            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.19,accompanimentMaster));
+            pairs[i][0].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.30,accompanimentMaster));
+            pairs[i][1].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.30,accompanimentMaster));
         }else if(i===20){
             const halfBar=barDur/2;
-            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.19,accompanimentMaster));
-            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.19,accompanimentMaster));
+            [53,57,60,62].forEach(m=>playSample(accompanimentInstrument,m,barStart,halfBar,0.30,accompanimentMaster));
+            [53,56,59,61].forEach(m=>playSample(accompanimentInstrument,m,barStart+halfBar,halfBar,0.30,accompanimentMaster));
         }else{
             playAccompanimentChord(B[i][0],barStart,barDur);
         }
