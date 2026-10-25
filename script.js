@@ -2097,7 +2097,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
         // Play the original 26-bar score once, including the coda, then stop.
         for(let pass=0;pass<1;pass++) for(const ev of fgOriginalSustainedEvents()){
             const when=startTime+(pass*26*48+ev.start)/12*beat;
-            playMelodyVoice(ev.m,when,ev.d/12*beat,0.05);
+            playMelodyVoice(ev.m,when,ev.d/12*beat,0.15);
         }
         const totalMs=(26*barDur+0.2)*1000;
         if(recording && wavCapture){
@@ -2156,7 +2156,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.25;
         const overlap=connected && melodySound==="rhodes" ? 0.040 : 0;
         // Deterministic subtle dynamics: reproducible on every playback/export.
         const dynamics=1+0.05*Math.sin(j*2.399963229728653);
-        playMelodyVoice(ev.m,ev.start,ev.dur+overlap,0.05*dynamics);
+        playMelodyVoice(ev.m,ev.start,ev.dur+overlap,0.15*dynamics);
     }
 
     const totalMs=(2*B.length*barDur+0.2)*1000;
@@ -2443,13 +2443,13 @@ function modernizeControls(){
     makeVolumeControl("melodyVolume","Melody Vol",melodyVolume,value=>{
         melodyVolume=value;
         if(audioSynth?.melodyMaster){
-            audioSynth.melodyMaster.gain.setValueAtTime(value,audioSynth.context.currentTime);
+            audioSynth.melodyMaster.gain.setValueAtTime(value*1.25,audioSynth.context.currentTime);
         }
     });
     makeVolumeControl("accompanimentVolume","Accomp Vol",accompanimentVolume,value=>{
         accompanimentVolume=value;
         if(audioSynth?.accompanimentMaster){
-            audioSynth.accompanimentMaster.gain.setValueAtTime(value,audioSynth.context.currentTime);
+            audioSynth.accompanimentMaster.gain.setValueAtTime(value*1.25,audioSynth.context.currentTime);
         }
     });
 
