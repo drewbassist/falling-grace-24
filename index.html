@@ -44,6 +44,7 @@
 
   <section id="fg-favorites" aria-label="Saved favorite charts">
     <span id="fg-auth-status">Favorites: not signed in</span>
+    <button id="fg-about-open" type="button" aria-haspopup="dialog">About</button>
     <button id="fg-sign-in" type="button">Sign In</button>
     <button id="fg-sign-out" type="button" hidden>Sign Out</button>
     <button id="fg-save" type="button" disabled>♡ Save Favorite</button>
@@ -70,6 +71,33 @@
     <tbody id="output"></tbody>
   </table>
 </main>
+
+
+<dialog id="fg-about-dialog" aria-labelledby="fg-about-title">
+  <div class="fg-about-heading"><h2 id="fg-about-title">The Falling Grace App</h2><button type="button" id="fg-about-close" aria-label="Close About dialog">×</button></div>
+  <p class="fg-about-subtitle">Pentatonic and Rhythmic Permutations</p>
+  <p>The Falling Grace App, based on Steve Swallow's composition <em>Falling Grace</em>, is an interactive jazz improvisation tool inspired by Mick Goodrick's 24 rhythmic permutations. It generates melodic variations over a fixed 24-measure harmonic progression using carefully selected pentatonic scales.</p>
+  <p>The application draws from three pentatonic types:</p>
+  <ul>
+    <li><strong>Major pentatonic:</strong> 1, 2, 3, 5, 6</li>
+    <li><strong>Minor pentatonic:</strong> 1, ♭3, 4, 5, ♭7</li>
+    <li><strong>Dominant 7♯9 pentatonic:</strong> 1, ♯2, 3, 5, ♭7 (C, D♯, E, G, B♭)</li>
+  </ul>
+  <p>Each chord has a curated selection of compatible pentatonics. The generator randomly selects one permitted five-note collection per measure, preserving its pitch classes rather than combining notes from multiple scales.</p>
+  <p>All 24 of Goodrick's rhythmic patterns appear exactly once per exercise in randomized order. Melodic generation follows defined constraints governing register, interval size, rhythmic ties, and harmonic compatibility.</p>
+  <p>Four melodic modes, <strong>Angular, Smooth, Triadic, and Quartal</strong>, provide different approaches to organizing the selected pitches.</p>
+  <p>Built with JavaScript, ABCJS notation, and sample-based audio playback, Falling Grace provides synchronized notation and playback, adjustable tempo and range, piano and Rhodes sounds, and downloadable MIDI, WAV, and PDF files.</p>
+  <p>The result is <strong>controlled musical randomness</strong>, producing a virtually unlimited variety of melodic exercises within clearly defined harmonic, rhythmic, and intervallic boundaries.</p>
+  <p>This application is not intended to replace the combination of pencil, manuscript paper, and your ears that Mick Goodrick advocated. Rather, it offers a complementary way to hear the musical possibilities created by these constraints, develop fluency with the resulting patterns under your fingers, and strengthen your sight-reading skills through continually changing melodic material.</p>
+</dialog>
+<script>
+(() => {
+  const dialog = document.getElementById('fg-about-dialog');
+  document.getElementById('fg-about-open').addEventListener('click', () => dialog.showModal());
+  document.getElementById('fg-about-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+})();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
