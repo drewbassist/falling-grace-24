@@ -729,7 +729,7 @@ function generateAll(){
 
 function abcPitch(note){
 
-    const m=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d)$/);
+    const m=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d+)$/);
 
     if(!m){
         throw Error("Invalid pitch: "+note.s);
@@ -742,34 +742,14 @@ function abcPitch(note){
     let abcLetter;
     let marks="";
 
-    if(octave===4){
-
-        abcLetter=letter;
-
-    }else if(octave===5){
-
+    // ABC permits arbitrarily high/low octaves using repeated apostrophes/commas.
+    // Baritone sax (+21 semitones) can legitimately require octave 7 or 8.
+    if(octave>=5){
         abcLetter=letter.toLowerCase();
-
-    }else if(octave===6){
-
-        abcLetter=letter.toLowerCase();
-        marks="'";
-
-    }else if(octave===3){
-
-        abcLetter=letter;
-        marks=",";
-
-    }else if(octave===2){
-
-        abcLetter=letter;
-        marks=",,";
-
+        marks="'".repeat(octave-5);
     }else{
-
-        throw Error(
-            "Unsupported octave for ABC: "+octave
-        );
+        abcLetter=letter;
+        marks=",".repeat(4-octave);
     }
 
     let acc="";
@@ -917,7 +897,7 @@ function abcMeasure(index){
 
     const addEvent=(duration)=>{
         const note=pitches[p++];
-        const match=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d)$/);
+        const match=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d+)$/);
         if(!match) throw Error("Invalid pitch: "+note.s);
         const key=match[1]+match[3];
         const desired=match[2] || "";
@@ -2956,7 +2936,7 @@ function fgAbcNote(ev, suppressAccidental=false){
     if(ev.m===null)return 'z';
     const shift=fgInstrumentShift();
     const transposed=shift?fgSpelledMidi(ev.m+shift):null;
-    const match=transposed?.s.match(/^([A-G])([#b]?)(\d)$/);
+    const match=transposed?.s.match(/^([A-G])([#b]?)(\d+)$/);
     const step=match?match[1]:ev.step;
     let acc=suppressAccidental&&shift===0?'':match?(match[2]==='b'?'_':match[2]==='#'?'^':''):ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
     const oct=(match?Number(match[3]):ev.oct)-(fgBassMode()?1:0);
