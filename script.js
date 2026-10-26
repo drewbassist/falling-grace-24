@@ -3,13 +3,27 @@
 const FG_ORIGINAL=[[{"m":75,"t":0,"d":48,"tie":true,"step":"E","alt":-1,"oct":5}],[{"m":75,"t":0,"d":24,"tie":true,"step":"E","alt":-1,"oct":5},{"m":75,"t":24,"d":8,"tie":true,"step":"E","alt":-1,"oct":5},{"m":74,"t":32,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":12,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":18,"d":6,"tie":true,"step":"B","alt":-1,"oct":4},{"m":70,"t":24,"d":18,"tie":true,"step":"B","alt":-1,"oct":4},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":18,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":74,"t":24,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":42,"d":6,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":67,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":4},{"m":67,"t":24,"d":12,"tie":true,"step":"G","alt":0,"oct":4},{"m":74,"t":36,"d":6,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":24,"tie":true,"step":"G","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":77,"t":24,"d":8,"tie":false,"step":"F","alt":0,"oct":5},{"m":76,"t":32,"d":8,"tie":false,"step":"E","alt":0,"oct":5},{"m":74,"t":40,"d":8,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":72,"t":0,"d":36,"tie":true,"step":"C","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":true,"step":"C","alt":0,"oct":5},{"m":71,"t":42,"d":3,"tie":false,"step":"B","alt":0,"oct":4},{"m":72,"t":45,"d":3,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":71,"t":0,"d":12,"tie":false,"step":"B","alt":0,"oct":4},{"m":71,"t":12,"d":6,"tie":false,"step":"B","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":78,"t":30,"d":12,"tie":false,"step":"F","alt":1,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":48,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":12,"tie":true,"step":"B","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":76,"t":18,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":76,"t":24,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":74,"t":30,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":36,"tie":true,"step":"B","alt":0,"oct":4},{"m":72,"t":36,"d":12,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":48,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":69,"t":12,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":72,"t":24,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":69,"t":40,"d":8,"tie":false,"step":"A","alt":0,"oct":4}],[{"m":72,"t":0,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":24,"tie":true,"step":"F","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":75,"t":12,"d":12,"tie":false,"step":"E","alt":-1,"oct":5},{"m":74,"t":24,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":32,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":76,"t":30,"d":12,"tie":false,"step":"E","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":74,"t":18,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":30,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":24,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":24,"d":8,"tie":true,"step":"A","alt":0,"oct":4},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":24,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":8,"tie":true,"step":"D","alt":0,"oct":5},{"m":75,"t":32,"d":8,"tie":false,"step":"E","alt":-1,"oct":5},{"m":77,"t":40,"d":8,"tie":false,"step":"F","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":8,"tie":true,"step":"G","alt":0,"oct":5},{"m":80,"t":32,"d":8,"tie":false,"step":"A","alt":-1,"oct":5},{"m":82,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":5}],[{"m":84,"t":0,"d":48,"tie":false,"step":"C","alt":0,"oct":6}]];
 let fgOriginalMode=false;
 // Clef changes the melody register only; stored source notes remain unchanged.
+// Instrument selection changes written notation only; audio remains in concert pitch.
+function fgInstrumentShift(){return Number(document.getElementById('fg-instrument')?.value||0);}
+const FG_PITCH_NAMES=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+function fgSpelledMidi(m){
+    const n=FG_PITCH_NAMES[((m%12)+12)%12];
+    return {m,s:n+(Math.floor(m/12)-1)};
+}
+function fgTransposeChord(symbol){
+    const shift=fgInstrumentShift();
+    if(!shift)return symbol;
+    return String(symbol).replace(/([A-G])([#b]?)/g,(whole,l,a)=>{
+        const base={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[l]+(a==='#'?1:a==='b'?-1:0);
+        return FG_PITCH_NAMES[((base+shift)%12+12)%12];
+    });
+}
 function fgBassMode(){return document.getElementById('fg-clef')?.value==='bass';}
 function fgMelodyMidi(m){return m==null?m:m-(fgBassMode()?12:0);}
 function fgDisplayNote(note){
-    if(!fgBassMode() || !note)return note;
-    const midi=note.m-12;
-    const match=note.s.match(/^([A-G])([#b]?)(\d)$/);
-    return {...note,m:midi,s:match?match[1]+match[2]+(Number(match[3])-1):note.s};
+    if(!note)return note;
+    const shift=fgInstrumentShift()-(fgBassMode()?12:0);
+    return shift?{...note,...fgSpelledMidi(note.m+shift)}:note;
 }
 function fgClefKey(){return fgBassMode()?'K:C clef=bass':'K:C';}
 
@@ -903,7 +917,7 @@ function abcMeasure(index){
 
     const addEvent=(duration)=>{
         const note=pitches[p++];
-        const match=note.s.match(/^([A-G])([#b]?)(\d)$/);
+        const match=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d)$/);
         if(!match) throw Error("Invalid pitch: "+note.s);
         const key=match[1]+match[3];
         const desired=match[2] || "";
@@ -1040,7 +1054,7 @@ function buildABC(){
 
     for(let i=0;i<B.length;i++){
 
-        const chord=B[i][0].split(/\s{2,}/)[0]
+        const chord=fgTransposeChord(B[i][0].split(/\s{2,}/)[0])
             .replace(/♭/g,"b")
             .replace(/♯/g,"#")
             .replace(/M7/g,"△7");
@@ -1049,7 +1063,7 @@ function buildABC(){
 
         if(i===5 || i===20){
 
-            bar=i===5 ? `"Eb/G" z2 z2 "D7/F#" z2 z2 |` : `"${chord}" z8 |`;
+            bar=i===5 ? `"${fgTransposeChord("Eb/G")}" z2 z2 "${fgTransposeChord("D7/F#")}" z2 z2 |` : `"${chord}" z8 |`;
 
         }else{
 
@@ -1226,7 +1240,7 @@ function renderScore(){
 
             for(let i=first;i<last;i++){
 
-                const chord=B[i][0].split(/\s{2,}/)[0]
+                const chord=fgTransposeChord(B[i][0].split(/\s{2,}/)[0])
                     .replace(/♭/g,"b")
                     .replace(/♯/g,"#")
             .replace(/M7/g,"△7");
@@ -1235,9 +1249,9 @@ function renderScore(){
                 let bar;
 
                 if(i===20){
-                    bar=`"Dm7" z4 "Db7" z4 |`;
+                    bar=`"${fgTransposeChord("Dm7")}" z4 "${fgTransposeChord("Db7")}" z4 |`;
                 }else if(i===5){
-                    bar=`"Eb/G" z2 z2 "D7/F#" z2 z2 |`;
+                    bar=`"${fgTransposeChord("Eb/G")}" z2 z2 "${fgTransposeChord("D7/F#")}" z2 z2 |`;
                 }else{
                     bar=`"${chord}" ${abcMeasure(i)} |`;
                 }
@@ -2594,7 +2608,7 @@ function arrangeCompactControls(styleButtons){
     const middle=document.createElement("div"); middle.className="fg-column fg-generation";
     const right=document.createElement("div"); right.className="fg-column fg-account";
     // Reparent original interactive elements, preserving listeners and IDs.
-    left.append(tempo,document.getElementById("fg-clef" ).closest("label"),range,styleButtons);
+    left.append(tempo,document.getElementById("fg-instrument").closest("label"),document.getElementById("fg-clef" ).closest("label"),range,styleButtons);
     // The contour buttons are created after practice setup, so move the
     // already-wired hi-hat checkbox here once the contour row exists.
     const hatLabel=document.querySelector(".fg-hat-option");
@@ -2940,13 +2954,17 @@ boot();
 
 function fgAbcNote(ev, suppressAccidental=false){
     if(ev.m===null)return 'z';
-    const step=ev.step;let acc=suppressAccidental?'':ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
-    const oct=ev.oct-(fgBassMode()?1:0);
+    const shift=fgInstrumentShift();
+    const transposed=shift?fgSpelledMidi(ev.m+shift):null;
+    const match=transposed?.s.match(/^([A-G])([#b]?)(\d)$/);
+    const step=match?match[1]:ev.step;
+    let acc=suppressAccidental&&shift===0?'':match?(match[2]==='b'?'_':match[2]==='#'?'^':''):ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
+    const oct=(match?Number(match[3]):ev.oct)-(fgBassMode()?1:0);
     return acc+(oct>=5?step.toLowerCase():step.toUpperCase())+(oct>5?"'".repeat(oct-5):oct<4?",".repeat(4-oct):'');
 }
 function fgAbcBars(first,last){
     return FG_ORIGINAL.slice(first,last).map((events,i)=>{
-        const chords=first+i===24?'Ab△7':first+i===25?'Db△7':(B[first+i]?.[0]||'').replace(/M7/g,'△7');
+        const chords=fgTransposeChord(first+i===24?'Ab△7':first+i===25?'Db△7':(B[first+i]?.[0]||'').replace(/M7/g,'△7'));
         let notes=[];
         for(let j=0;j<events.length;j++){
             const ev=events[j];
@@ -2968,9 +2986,9 @@ function fgAbcBars(first,last){
             const sixteenthPair=prior && prior.d===3 && ev.d===3 && Math.floor(prior.t/12)===Math.floor(ev.t/12);
             const beam=prior && ((prior.d===6 && ev.d===6 && sameBeat) || tripletContinuation || sixteenthPair);
             // A cross-barline tied continuation retains its accidental without reprinting it.
-            const omitFlat=(first+i===1 && ev.step==='E' && ev.alt===-1) ||
+            const omitFlat=fgInstrumentShift()===0 && ((first+i===1 && ev.step==='E' && ev.alt===-1) ||
                 (first+i===4 && j===3 && ev.step==='B' && ev.alt===-1) ||
-                (first+i===5 && j===5 && ev.step==='B' && ev.alt===-1);
+                (first+i===5 && j===5 && ev.step==='B' && ev.alt===-1));
             const token=(triplet?'(3':'')+fgAbcNote(ev,omitFlat)+duration+(tied?'-':'');
             notes.push((beam?'':' ')+token);
         }
@@ -3169,7 +3187,13 @@ function fgInstallExtraButtons(){
 window.addEventListener("resize",()=>{if(fgOriginalMode)requestAnimationFrame(fgFitOriginalToViewport);});
 window.addEventListener('DOMContentLoaded',()=>{
     const clef=document.getElementById('fg-clef');
-    if(!clef)return;
+    const instrument=document.getElementById('fg-instrument');
+    if(!clef || !instrument)return;
+    instrument.value=localStorage.getItem('fg-instrument-selection')||'0';
+    instrument.addEventListener('change',()=>{
+        localStorage.setItem('fg-instrument-selection',instrument.value);
+        stopPlayback();renderScore();
+    });
     clef.value=localStorage.getItem('fg-clef-selection')==='bass'?'bass':'treble';
     clef.addEventListener('change',()=>{
         localStorage.setItem('fg-clef-selection',clef.value);
