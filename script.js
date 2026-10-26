@@ -2,6 +2,17 @@
 // Original MusicXML transcription, durations in 1/12 quarter-note units.
 const FG_ORIGINAL=[[{"m":75,"t":0,"d":48,"tie":true,"step":"E","alt":-1,"oct":5}],[{"m":75,"t":0,"d":24,"tie":true,"step":"E","alt":-1,"oct":5},{"m":75,"t":24,"d":8,"tie":true,"step":"E","alt":-1,"oct":5},{"m":74,"t":32,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":36,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":36,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":12,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":18,"d":6,"tie":true,"step":"B","alt":-1,"oct":4},{"m":70,"t":24,"d":18,"tie":true,"step":"B","alt":-1,"oct":4},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":18,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":74,"t":24,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":42,"d":6,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":67,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":4},{"m":67,"t":24,"d":12,"tie":true,"step":"G","alt":0,"oct":4},{"m":74,"t":36,"d":6,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":42,"d":6,"tie":true,"step":"C","alt":0,"oct":5}],[{"m":72,"t":0,"d":12,"tie":true,"step":"C","alt":0,"oct":5},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":24,"tie":true,"step":"G","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":77,"t":24,"d":8,"tie":false,"step":"F","alt":0,"oct":5},{"m":76,"t":32,"d":8,"tie":false,"step":"E","alt":0,"oct":5},{"m":74,"t":40,"d":8,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":72,"t":0,"d":36,"tie":true,"step":"C","alt":0,"oct":5},{"m":72,"t":36,"d":6,"tie":true,"step":"C","alt":0,"oct":5},{"m":71,"t":42,"d":3,"tie":false,"step":"B","alt":0,"oct":4},{"m":72,"t":45,"d":3,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":71,"t":0,"d":12,"tie":false,"step":"B","alt":0,"oct":4},{"m":71,"t":12,"d":6,"tie":false,"step":"B","alt":0,"oct":4},{"m":79,"t":18,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":6,"tie":true,"step":"G","alt":0,"oct":5},{"m":78,"t":30,"d":12,"tie":false,"step":"F","alt":1,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":48,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":12,"tie":true,"step":"B","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":76,"t":18,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":76,"t":24,"d":6,"tie":true,"step":"E","alt":0,"oct":5},{"m":74,"t":30,"d":12,"tie":false,"step":"D","alt":0,"oct":5},{"m":71,"t":42,"d":6,"tie":true,"step":"B","alt":0,"oct":4}],[{"m":71,"t":0,"d":36,"tie":true,"step":"B","alt":0,"oct":4},{"m":72,"t":36,"d":12,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":48,"tie":false,"step":"D","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":69,"t":12,"d":12,"tie":false,"step":"A","alt":0,"oct":4},{"m":72,"t":24,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":69,"t":40,"d":8,"tie":false,"step":"A","alt":0,"oct":4}],[{"m":72,"t":0,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":12,"d":6,"tie":false,"step":"B","alt":-1,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":24,"tie":true,"step":"F","alt":0,"oct":5}],[{"m":null,"t":0,"d":12,"tie":false,"step":null,"alt":0,"oct":null},{"m":75,"t":12,"d":12,"tie":false,"step":"E","alt":-1,"oct":5},{"m":74,"t":24,"d":8,"tie":false,"step":"D","alt":0,"oct":5},{"m":72,"t":32,"d":8,"tie":false,"step":"C","alt":0,"oct":5},{"m":70,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":12,"d":6,"tie":false,"step":"A","alt":0,"oct":4},{"m":77,"t":18,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":77,"t":24,"d":6,"tie":true,"step":"F","alt":0,"oct":5},{"m":76,"t":30,"d":12,"tie":false,"step":"E","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":48,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":12,"tie":true,"step":"A","alt":0,"oct":4},{"m":67,"t":12,"d":6,"tie":false,"step":"G","alt":0,"oct":4},{"m":74,"t":18,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":6,"tie":true,"step":"D","alt":0,"oct":5},{"m":72,"t":30,"d":12,"tie":false,"step":"C","alt":0,"oct":5},{"m":69,"t":42,"d":6,"tie":true,"step":"A","alt":0,"oct":4}],[{"m":69,"t":0,"d":24,"tie":true,"step":"A","alt":0,"oct":4},{"m":69,"t":24,"d":8,"tie":true,"step":"A","alt":0,"oct":4},{"m":70,"t":32,"d":8,"tie":false,"step":"B","alt":-1,"oct":4},{"m":72,"t":40,"d":8,"tie":false,"step":"C","alt":0,"oct":5}],[{"m":74,"t":0,"d":24,"tie":true,"step":"D","alt":0,"oct":5},{"m":74,"t":24,"d":8,"tie":true,"step":"D","alt":0,"oct":5},{"m":75,"t":32,"d":8,"tie":false,"step":"E","alt":-1,"oct":5},{"m":77,"t":40,"d":8,"tie":false,"step":"F","alt":0,"oct":5}],[{"m":79,"t":0,"d":24,"tie":true,"step":"G","alt":0,"oct":5},{"m":79,"t":24,"d":8,"tie":true,"step":"G","alt":0,"oct":5},{"m":80,"t":32,"d":8,"tie":false,"step":"A","alt":-1,"oct":5},{"m":82,"t":40,"d":8,"tie":false,"step":"B","alt":-1,"oct":5}],[{"m":84,"t":0,"d":48,"tie":false,"step":"C","alt":0,"oct":6}]];
 let fgOriginalMode=false;
+// Clef changes the melody register only; stored source notes remain unchanged.
+function fgBassMode(){return document.getElementById('fg-clef')?.value==='bass';}
+function fgMelodyMidi(m){return m==null?m:m-(fgBassMode()?12:0);}
+function fgDisplayNote(note){
+    if(!fgBassMode() || !note)return note;
+    const midi=note.m-12;
+    const match=note.s.match(/^([A-G])([#b]?)(\d)$/);
+    return {...note,m:midi,s:match?match[1]+match[2]+(Number(match[3])-1):note.s};
+}
+function fgClefKey(){return fgBassMode()?'K:C clef=bass':'K:C';}
+
 const R=[
 ["Rhythm 1","Q · EE · EE · Q"],
 ["Rhythm 2","Q · EE · E · Q · E"],
@@ -704,7 +715,7 @@ function generateAll(){
 
 function abcPitch(note){
 
-    const m=note.s.match(/^([A-G])([#b]?)(\d)$/);
+    const m=fgDisplayNote(note).s.match(/^([A-G])([#b]?)(\d)$/);
 
     if(!m){
         throw Error("Invalid pitch: "+note.s);
@@ -1017,7 +1028,7 @@ function buildABC(){
         "M:4/4",
         "L:1/8",
         `Q:1/4=${getTempo()}`,
-        "K:C",
+        fgClefKey(),
         "%%barnumbers 1",
         "%%measurefirst 1",
         "%%barsperstaff 4",
@@ -1202,7 +1213,7 @@ function renderScore(){
                 "M:4/4",
                 "L:1/8",
                 
-                "K:C",
+                fgClefKey(),
                 "%%barnumbers 1",
                 `%%measurefirst ${first+1}`,
                 "%%barsperstaff 4",
@@ -2097,7 +2108,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
         // Play the original 26-bar score once, including the coda, then stop.
         for(let pass=0;pass<1;pass++) for(const ev of fgOriginalSustainedEvents()){
             const when=startTime+(pass*26*48+ev.start)/12*beat;
-            playMelodyVoice(ev.m,when,ev.d/12*beat,0.15);
+            playMelodyVoice(fgMelodyMidi(ev.m),when,ev.d/12*beat,0.15);
         }
         const totalMs=(26*barDur+0.2)*1000;
         if(recording && wavCapture){
@@ -2133,7 +2144,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
         if(i===5 || i===20 || fgPracticeMode==="mute" || (fgPracticeMode==="trade" && pass===1)) continue;
         let pos=0;
         eventDurations(i).forEach((units,j)=>{
-            melodyEvents.push({m:notes[i][j].m,start:barStart+pos*beat/2,dur:units*beat/2,
+            melodyEvents.push({m:fgMelodyMidi(notes[i][j].m),start:barStart+pos*beat/2,dur:units*beat/2,
                 tieNext:internalTiePositions(i).includes(j) || (j===notes[i].length-1 && boundaryTied(i))});
             pos+=units;
         });
@@ -2583,7 +2594,7 @@ function arrangeCompactControls(styleButtons){
     const middle=document.createElement("div"); middle.className="fg-column fg-generation";
     const right=document.createElement("div"); right.className="fg-column fg-account";
     // Reparent original interactive elements, preserving listeners and IDs.
-    left.append(tempo,range,styleButtons);
+    left.append(tempo,document.getElementById("fg-clef" ).closest("label"),range,styleButtons);
     // The contour buttons are created after practice setup, so move the
     // already-wired hi-hat checkbox here once the contour row exists.
     const hatLabel=document.querySelector(".fg-hat-option");
@@ -2930,7 +2941,7 @@ boot();
 function fgAbcNote(ev, suppressAccidental=false){
     if(ev.m===null)return 'z';
     const step=ev.step;let acc=suppressAccidental?'':ev.alt===-1?'_':ev.alt===1?'^':ev.alt===2?'^^':'';
-    const oct=ev.oct;
+    const oct=ev.oct-(fgBassMode()?1:0);
     return acc+(oct>=5?step.toLowerCase():step.toUpperCase())+(oct>5?"'".repeat(oct-5):oct<4?",".repeat(4-oct):'');
 }
 function fgAbcBars(first,last){
@@ -2968,7 +2979,7 @@ function fgAbcBars(first,last){
 }
 function fgDrawScoreSystem(parent,first,last){
     const sys=document.createElement('div');sys.className='score-system';sys.style.cssText='width:80%;max-width:80%;margin:0 auto 2px;overflow:visible;position:relative;';parent.appendChild(sys);
-    const abc=['X:1','M:4/4','L:1/8','K:C','%%stretchlast 1',fgAbcBars(first,last)].join('\n');
+    const abc=['X:1','M:4/4','L:1/8',fgClefKey(),'%%stretchlast 1',fgAbcBars(first,last)].join('\n');
     ABCJS.renderAbc(sys,abc,{staffwidth:Math.max(520,Math.round((parent.clientWidth||1200)*0.8-72)),scale:1.0,add_classes:true,paddingleft:24,paddingright:24});
     const svg=sys.querySelector('svg');
     if(svg){
@@ -3126,15 +3137,15 @@ function fgDownloadMidi(){
     for(let i=0;i<count;i++){
         const base=i*barTicks;
         if(fgOriginalMode){/* Original melody is added as merged tie chains below. */}
-        else if(i<24 && i!==5 && i!==20){let pos=0;eventDurations(i).forEach((units,j)=>{add(melody,0,notes[i][j]?.m,base+pos*ppq/2,units*ppq/2,88);pos+=units;});}
-        else if(i>=24){for(const ev of FG_ORIGINAL[i])add(melody,0,ev.m,base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
+        else if(i<24 && i!==5 && i!==20){let pos=0;eventDurations(i).forEach((units,j)=>{add(melody,0,fgMelodyMidi(notes[i][j]?.m),base+pos*ppq/2,units*ppq/2,88);pos+=units;});}
+        else if(i>=24){for(const ev of FG_ORIGINAL[i])add(melody,0,fgMelodyMidi(ev.m),base+Math.round(ev.t/12*ppq),Math.round(ev.d/12*ppq),88);}
         // Preserve accompaniment harmonic changes, including two-chord bars.
         const pairs={4:[[53,56,60,63],[53,56,62,70]],5:[[55,58,63,67],[54,60,62,69]],10:[[52,55,57,60],[54,57,60,62]],20:[[53,57,60,62],[53,56,59,61]],21:[[51,55,58,60],[53,56,58,62]]};
         if(pairs[i])pairs[i].forEach((voicing,h)=>voicing.forEach(m=>add(accomp,1,m,base+h*barTicks/2,barTicks/2,68)));
         else {const voicings={24:[56,60,63,67],25:[61,65,68,72]};const chord=i<24?B[i][0]:'';const match=chord.match(/^([A-G])([b#]?)/);const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11};const root=match?(semis[match[1]]+(match[2]==='b'?-1:match[2]==='#'?1:0)+120)%12:null;const minor=/m7|mM7|m7b5/.test(chord);const diminished=/dim|°|m7b5/.test(chord);const seventh=/7/.test(chord);const v=voicings[i]||(root===null?[]:[48+root,48+root+(minor||diminished?3:4),48+root+(diminished?6:7),48+root+(seventh?minor||/^[A-G][b#]?7/.test(chord)?10:11:11)]);v.forEach(m=>add(accomp,1,m,base,barTicks,68));}
     }
     if(fgOriginalMode)for(const ev of fgOriginalSustainedEvents())
-        add(melody,0,ev.m,Math.round(ev.start/12*ppq),Math.round(ev.d/12*ppq),88);
+        add(melody,0,fgMelodyMidi(ev.m),Math.round(ev.start/12*ppq),Math.round(ev.d/12*ppq),88);
     const header=fgMidiChunk('MThd',[0,1,0,3,1,224]);const bytes=new Uint8Array([...header,...fgMidiTrack(meta),...fgMidiTrack(melody),...fgMidiTrack(accomp)]);
     const url=URL.createObjectURL(new Blob([bytes],{type:'audio/midi'}));const a=document.createElement('a');a.href=url;a.download='Falling-Grace-'+(fgOriginalMode?'Original':'Generated')+'.mid';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
@@ -3156,3 +3167,14 @@ function fgInstallExtraButtons(){
 }
 
 window.addEventListener("resize",()=>{if(fgOriginalMode)requestAnimationFrame(fgFitOriginalToViewport);});
+window.addEventListener('DOMContentLoaded',()=>{
+    const clef=document.getElementById('fg-clef');
+    if(!clef)return;
+    clef.value=localStorage.getItem('fg-clef-selection')==='bass'?'bass':'treble';
+    clef.addEventListener('change',()=>{
+        localStorage.setItem('fg-clef-selection',clef.value);
+        stopPlayback();
+        renderScore();
+    });
+    renderScore();
+});
