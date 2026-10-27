@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="style.css">
 <style id="contact-popup-styles">
 .contact-popup-button{cursor:pointer}
-.contact-popup-dialog{border:1px solid #d6d6d6;border-radius:14px;padding:36px 22px 22px;max-width:min(92vw,590px);box-shadow:0 14px 48px #0004;position:fixed}
+.contact-popup-dialog{border:1px solid #d6d6d6;border-radius:14px;padding:36px 22px 22px;width:min(92vw,1000px);max-width:1000px;box-sizing:border-box;box-shadow:0 14px 48px #0004;position:fixed}
 .contact-popup-dialog::backdrop{background:rgba(0,0,0,.45)}
 .contact-popup-dialog img{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
 .contact-popup-close{position:absolute;right:9px;top:6px;background:transparent;border:0;font-size:28px;cursor:pointer;line-height:1.2}
@@ -53,8 +53,8 @@
 
   <section id="fg-favorites" aria-label="Saved favorite charts">
     <span id="fg-auth-status">Favorites: not signed in</span>
-    <button id="contact-popup-open" class="contact-popup-button" type="button" aria-haspopup="dialog" aria-controls="contact-popup">Contact</button>
     <button id="fg-about-open" type="button" aria-haspopup="dialog">About</button>
+    <button id="contact-popup-open" class="contact-popup-button" type="button" aria-haspopup="dialog" aria-controls="contact-popup">Contact</button>
     <button id="fg-sign-in" type="button">Sign In</button>
     <button id="fg-sign-out" type="button" hidden>Sign Out</button>
     <button id="fg-save" type="button" disabled>♡ Save Favorite</button>
