@@ -13,6 +13,16 @@
 .contact-popup-dialog::backdrop{background:rgba(0,0,0,.45)}
 .contact-popup-dialog img{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
 .contact-popup-close{position:absolute;right:9px;top:6px;background:transparent;border:0;font-size:28px;cursor:pointer;line-height:1.2}
+
+/* Match Giant Steps: full-width About, then full-width Contact. */
+#transport .fg-account #fg-about-open{grid-column:1 / -1;grid-row:1;width:100%;}
+#transport .fg-account #contact-popup-open{grid-column:1 / -1;grid-row:2;width:100%;}
+#transport .fg-account #fg-save{grid-column:1;grid-row:3;}
+#transport .fg-account #fg-sign-in,#transport .fg-account #fg-sign-out{grid-column:2;grid-row:3;}
+#transport .fg-account #fg-load{grid-column:1;grid-row:4;}
+#transport .fg-account #fg-delete{grid-column:2;grid-row:4;}
+#transport .fg-account #fg-auth-status{grid-column:1 / -1;grid-row:5;}
+#transport .fg-account #fg-favorites-message{grid-column:1 / -1;grid-row:6;}
 </style>
 </head>
 <body>
