@@ -457,3 +457,20 @@ h1{font-size:48px;margin-bottom:8px}
 /* Compact clef control in the composition column */
 .fg-clef-control{display:inline-flex;align-items:center;gap:7px;font-size:12px;margin:2px 0 5px;color:inherit}
 .fg-clef-control select{font:inherit;max-width:170px;padding:3px 5px}
+
+/* Favorites panel: keep account status below the Load/Delete row.
+   The previous desktop rule put the status in row 4, overlapping the dropdown. */
+#transport .fg-account #fg-favorites{align-items:center !important;row-gap:10px !important;}
+#transport .fg-account #fg-auth-status{
+  grid-column:1 / -1 !important;grid-row:5 !important;
+  align-self:start !important;justify-self:start !important;
+  min-width:0 !important;max-width:100% !important;
+  overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;
+  order:initial !important;margin:0 !important;
+}
+#transport .fg-account #fg-favorites-message{
+  grid-column:1 / -1 !important;grid-row:6 !important;
+  min-width:0 !important;margin:0 !important;
+}
+#transport .fg-account #fg-load{grid-column:1 !important;grid-row:4 !important;}
+#transport .fg-account #fg-delete{grid-column:2 !important;grid-row:4 !important;}
