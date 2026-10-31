@@ -263,6 +263,7 @@ let melodyVolume=0.8;
 let accompanimentVolume=0.8;
 let fgPracticeMode="normal"; // normal, mute, trade
 let fgHiHatEnabled=false;
+let fgCountInEnabled=true; // Four closed hi-hat beats before playback.
 
 let melodyLowMidi=60; // A3
 let melodyHighMidi=79; // C6
@@ -2001,7 +2002,8 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
     const bpm=getTempo();
     const beat=60/bpm;
     const barDur=beat*4;
-    const startTime=ctx.currentTime+0.08;
+    const countInDuration=fgCountInEnabled ? 4*beat : 0;
+    const startTime=ctx.currentTime+0.08+countInDuration;
     startScoreFollower(audioSynth,startTime,beat);
 
     const playSample=(instrument,midi,start,dur,level,destination)=>{
@@ -2060,6 +2062,35 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
         chordNotes.forEach(midi=>playSample(accompanimentInstrument,midi,start,dur,0.60,accompanimentMaster));
     };
 
+    // Four-beat closed hi-hat count-in, scheduled on the Web Audio clock.
+    // It works for Play and Space because both use the same transport.
+    if(fgCountInEnabled){
+        const sampleRate=ctx.sampleRate;
+        const length=Math.round(sampleRate*0.065);
+        const noise=ctx.createBuffer(1,length,sampleRate);
+        const samples=noise.getChannelData(0);
+        for(let n=0;n<length;n++) samples[n]=(Math.random()*2-1)*Math.exp(-n/(sampleRate*0.012));
+        for(let hit=0;hit<4;hit++){
+            const when=startTime-(4-hit)*beat;
+            const source=ctx.createBufferSource();
+            const highpass=ctx.createBiquadFilter();
+            highpass.type="highpass";
+            highpass.frequency.value=6500;
+            const gain=ctx.createGain();
+            gain.gain.setValueAtTime(0.0001,when);
+            gain.gain.linearRampToValueAtTime(hit===0?0.60:0.38,when+0.002);
+            gain.gain.exponentialRampToValueAtTime(0.0001,when+0.06);
+            source.buffer=noise;
+            source.connect(highpass);
+            highpass.connect(gain);
+            gain.connect(hiHatMaster);
+            source.start(when);
+            source.stop(when+0.065);
+            audioSynth.sources.push(source);
+            audioSynth.gains.push(gain);
+        }
+    }
+
     // Short, dry synthesized closed hi-hat on beats 2 and 4 only.
     // Generated once per playback; no samples or network dependencies.
     if(fgHiHatEnabled){
@@ -2109,7 +2140,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
             const when=startTime+(pass*26*48+ev.start)/12*beat;
             playMelodyVoice(fgMelodyMidi(ev.m),when,ev.d/12*beat,0.15);
         }
-        const totalMs=(26*barDur+0.2)*1000;
+        const totalMs=(countInDuration+26*barDur+0.2)*1000;
         if(recording && wavCapture){
             const capture=wavCapture;
             audioSynth.timeoutIds.push(setTimeout(()=>{
@@ -2169,7 +2200,7 @@ accompanimentMaster.gain.value=accompanimentVolume*1.8;
         playMelodyVoice(ev.m,ev.start,ev.dur+overlap,0.15*dynamics);
     }
 
-    const totalMs=(2*B.length*barDur+0.2)*1000;
+    const totalMs=(countInDuration+2*B.length*barDur+0.2)*1000;
     if(recording && wavCapture){
         const capture=wavCapture;
         // Finish after the final chord has decayed, before the context closes.
@@ -2659,11 +2690,20 @@ function setupFgPracticeControls(){
     hat.checked=fgHiHatEnabled;
     hat.addEventListener("change",()=>{fgHiHatEnabled=hat.checked;stopPlayback();});
     hatLabel.append(hat,document.createTextNode(" Hi-hat 2 & 4"));
+    const countInLabel=document.createElement("label");
+    countInLabel.className="fg-hat-option";
+    const countIn=document.createElement("input");
+    countIn.type="checkbox";
+    countIn.id="fg-count-in";
+    countIn.checked=fgCountInEnabled;
+    countIn.addEventListener("change",()=>{fgCountInEnabled=countIn.checked;stopPlayback();});
+    countInLabel.append(countIn,document.createTextNode(" 4-beat count-in"));
     practice.append(modeLabel,mode,hatLabel);
     row.parentElement.insertBefore(practice,row);
     // Position the hi-hat immediately after the contour buttons.
     const contour=document.querySelector(".fg-style-buttons");
-    if(contour) contour.appendChild(hatLabel);
+    if(contour){contour.appendChild(hatLabel);contour.appendChild(countInLabel);}
+    else practice.appendChild(countInLabel);
     const pdf=document.createElement("button");pdf.type="button";pdf.id="downloadPdf";
     pdf.className="fg-modern-button";pdf.textContent="↓ PDF";
     pdf.title="Print score or save as PDF";
