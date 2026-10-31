@@ -431,7 +431,9 @@ function melody(
             throw Error("No legal octave placement");
         }
 
-        const p=pick(c);
+        // Prefer a different pitch when possible; retain rare repeats for variety.
+        const fresh=c.filter(x=>previous==null || x.m!==previous);
+        const p=pick(fresh.length && Math.random()>=0.035 ? fresh : c);
         out.push(p);
         previous=p.m;
     }
@@ -467,7 +469,10 @@ function smoothMelody(scale, previous, rhythmText, barIndex){
                 const novelty=(state.mask&bit)?0:2.7;
                 const score=state.score + novelty + direction*leap*.48
                     - Math.abs(n.m-target)*.11 - Math.abs(leap)*.13
-                    - (reversal? .65:0) + Math.random()*.55;
+                    - (reversal? .65:0)
+                    // Strongly discourage reattacks on the same pitch, without banning them.
+                    - (state.last!==null && n.m===state.last ? 9 : 0)
+                    + Math.random()*.55;
                 next.push({seq:[...state.seq,n],last:n.m,mask:state.mask|bit,score});
             }
         }
